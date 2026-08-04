@@ -1,0 +1,20 @@
+[
+  {
+    "id": "kraken",
+    "name": "크라켄 인어",
+    "depth": 900,
+    "divePower": 40
+  },
+  {
+    "id": "fusion_shark",
+    "name": "핵융합 상어",
+    "depth": 800,
+    "divePower": 10
+  },
+  {
+    "id": "unfathomable_jellyfish",
+    "name": "불가해파리",
+    "depth": 850,
+    "divePower": 20
+  }
+]

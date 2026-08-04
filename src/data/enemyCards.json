@@ -1,0 +1,72 @@
+[
+  {
+    "id": "tentacle_squeeze",
+    "name": "촉수 압박",
+    "type": "special",
+    "description": "촉수로 상대를 옭아매어 호흡을 방해한다.",
+    "enemyId": "kraken",
+    "effects": [
+      { "kind": "statusEffect", "status": "attackDown", "amount": 20, "duration": 2, "target": "opponent" }
+    ]
+  },
+  {
+    "id": "coral_carapace",
+    "name": "산호 갑주",
+    "type": "defense",
+    "description": "단단한 산호 껍질로 몸을 감싼다.",
+    "enemyId": "kraken",
+    "effects": [{ "kind": "shield", "amount": 80, "target": "self" }]
+  },
+  {
+    "id": "berserk_charge",
+    "name": "미친 돌진",
+    "type": "attack",
+    "description": "이성을 잃고 온몸으로 들이받는다.",
+    "enemyId": "fusion_shark",
+    "effects": [{ "kind": "damage", "amount": 300, "target": "opponent" }]
+  },
+  {
+    "id": "eat_shrimp",
+    "name": "새우 먹기",
+    "type": "dive",
+    "description": "숨겨뒀던 새우를 먹는다.",
+    "enemyId": "fusion_shark",
+    "effects": [{ "kind": "depthChange", "amount": 5, "target": "self" }]
+  },
+  {
+    "id": "high_frequency_roar",
+    "name": "고주파 포효",
+    "type": "special",
+    "description": "고주파 포효로 상대의 정신을 흔들어 놓는다.",
+    "enemyId": "fusion_shark",
+    "effects": [
+      { "kind": "statusEffect", "status": "attackDown", "amount": 20, "duration": 2, "target": "opponent" }
+    ]
+  },
+  {
+    "id": "jaw_snap",
+    "name": "아가미 물어뜯기",
+    "type": "attack",
+    "description": "날카로운 이빨로 상대의 아가미를 물어뜯는다.",
+    "enemyId": "fusion_shark",
+    "effects": [{ "kind": "damage", "amount": 120, "target": "opponent" }]
+  },
+  {
+    "id": "toxic_current",
+    "name": "독성 전류",
+    "type": "special",
+    "description": "독이 흐르는 전류로 상대를 서서히 갉아먹는다.",
+    "enemyId": "unfathomable_jellyfish",
+    "effects": [
+      { "kind": "statusEffect", "status": "poison", "amount": 30, "duration": 3, "target": "opponent" }
+    ]
+  },
+  {
+    "id": "drifting_sting",
+    "name": "부유 촉수",
+    "type": "attack",
+    "description": "흐느적거리는 촉수로 약하게 찌른다.",
+    "enemyId": "unfathomable_jellyfish",
+    "effects": [{ "kind": "damage", "amount": 80, "target": "opponent" }]
+  }
+]

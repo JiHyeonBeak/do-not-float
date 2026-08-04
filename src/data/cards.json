@@ -1,0 +1,42 @@
+[
+  {
+    "id": "shark_swarm",
+    "name": "상어 떼",
+    "type": "attack",
+    "hidden": false,
+    "description": "수많은 상어를 호출하여 적을 공격한다.",
+    "effects": [{ "kind": "damage", "amount": 150, "target": "opponent" }]
+  },
+  {
+    "id": "coral_wall",
+    "name": "산호 방벽",
+    "type": "defense",
+    "hidden": false,
+    "description": "단단한 산호벽을 생성하여 공격을 막는다.",
+    "effects": [{ "kind": "shield", "amount": 100, "target": "self" }]
+  },
+  {
+    "id": "rebreath",
+    "name": "재호흡",
+    "type": "dive",
+    "hidden": false,
+    "description": "새로운 산소 공급으로 더 깊은 곳으로 잠수한다.",
+    "effects": [{ "kind": "depthChange", "amount": 50, "target": "self" }]
+  },
+  {
+    "id": "current_control",
+    "name": "해류 조종",
+    "type": "special",
+    "hidden": false,
+    "description": "다음 턴의 적 행동을 1회 취소한다.",
+    "effects": [{ "kind": "cancelNextEnemyAction" }]
+  },
+  {
+    "id": "jellyfish_air_pump",
+    "name": "해파리 에어펌프",
+    "type": "attack",
+    "hidden": true,
+    "description": "불가해파리를 이기면 얻을 수 있는 카드.",
+    "effects": [{ "kind": "damage", "amount": 200, "target": "opponent" }]
+  }
+]
