@@ -2,6 +2,7 @@ import Phaser from "phaser";
 import { BootScene } from "../scenes/BootScene";
 import { PreloadScene } from "../scenes/PreloadScene";
 import { MainMenuScene } from "../scenes/MainMenuScene";
+import { LicenseScene } from "../scenes/LicenseScene";
 import { MapScene } from "../scenes/MapScene";
 import { BattleScene } from "../scenes/BattleScene";
 import { RewardScene } from "../scenes/RewardScene";
@@ -18,6 +19,7 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
     BootScene,
     PreloadScene,
     MainMenuScene,
+    LicenseScene,
     MapScene,
     BattleScene,
     RewardScene,

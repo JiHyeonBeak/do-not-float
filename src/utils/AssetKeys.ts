@@ -6,6 +6,9 @@ export const AssetKeys = {
     unfathomableJellyfish: "unfathomable-jellyfish",
     backgroundBattle: "background-battle",
   },
+  animations: {
+    playerIdle: "player-idle",
+  },
   audio: {
     bgmBattle: "bgm-battle",
     sfxCardSelect: "sfx-card-select",

@@ -14,3 +14,7 @@ export const ENEMY_ACTION_WEIGHTS = {
 } as const;
 
 export const HAND_SIZE = 4;
+
+// 게임 전체에서 쓰는 픽셀 폰트. public/assets/fonts/neodgm.ttf로 로드된다.
+export const FONT_NAME = "NeoDunggeunmo";
+export const FONT_FAMILY = `"${FONT_NAME}", monospace`;

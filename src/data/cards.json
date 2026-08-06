@@ -38,5 +38,125 @@
     "hidden": true,
     "description": "불가해파리를 이기면 얻을 수 있는 카드.",
     "effects": [{ "kind": "damage", "amount": 200, "target": "opponent" }]
+  },
+  {
+    "id": "eel_ambush",
+    "name": "쏠종개의 기습",
+    "type": "attack",
+    "hidden": false,
+    "description": "가시 돋친 쏠종개가 빠르게 파고들어 찌른다.",
+    "effects": [{ "kind": "damage", "amount": 120, "target": "opponent" }]
+  },
+  {
+    "id": "electric_ray_shock",
+    "name": "전기가오리 방전",
+    "type": "attack",
+    "hidden": false,
+    "description": "전기가오리가 강력한 전류를 흘려보낸다.",
+    "effects": [{ "kind": "damage", "amount": 160, "target": "opponent" }]
+  },
+  {
+    "id": "anglerfish_ambush",
+    "name": "아귀의 유인 습격",
+    "type": "attack",
+    "hidden": false,
+    "description": "빛으로 유인한 뒤 날카로운 이빨로 물어뜯는다.",
+    "effects": [{ "kind": "damage", "amount": 140, "target": "opponent" }]
+  },
+  {
+    "id": "ink_blast",
+    "name": "먹물 폭발",
+    "type": "attack",
+    "hidden": false,
+    "description": "짙은 먹물을 터뜨려 시야를 가리며 공격한다.",
+    "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" }]
+  },
+  {
+    "id": "tidal_slam",
+    "name": "해일 강타",
+    "type": "attack",
+    "hidden": false,
+    "description": "거대한 해일을 일으켜 적을 강타한다.",
+    "effects": [{ "kind": "damage", "amount": 220, "target": "opponent" }]
+  },
+  {
+    "id": "great_white_charge",
+    "name": "백상아리 돌진",
+    "type": "attack",
+    "hidden": false,
+    "description": "백상아리가 전속력으로 몸을 던져 들이받는다.",
+    "effects": [{ "kind": "damage", "amount": 250, "target": "opponent" }]
+  },
+  {
+    "id": "kraken_tentacle_strike",
+    "name": "크라켄의 촉수",
+    "type": "attack",
+    "hidden": false,
+    "description": "거대한 촉수가 휘몰아치며 적을 후려친다.",
+    "effects": [{ "kind": "damage", "amount": 190, "target": "opponent" }]
+  },
+  {
+    "id": "bioluminescent_flare",
+    "name": "발광 섬광",
+    "type": "attack",
+    "hidden": false,
+    "description": "눈부신 생물발광으로 적의 감각을 마비시키며 공격한다.",
+    "effects": [{ "kind": "damage", "amount": 130, "target": "opponent" }]
+  },
+  {
+    "id": "coral_spear",
+    "name": "산호 창",
+    "type": "attack",
+    "hidden": false,
+    "description": "날카롭게 벼려진 산호 조각을 창처럼 쏘아 보낸다.",
+    "effects": [{ "kind": "damage", "amount": 150, "target": "opponent" }]
+  },
+  {
+    "id": "buoyancy_control",
+    "name": "부력 조절",
+    "type": "dive",
+    "hidden": false,
+    "description": "부레를 조절해 수심을 안정적으로 유지한다.",
+    "effects": [{ "kind": "depthChange", "amount": 40, "target": "self" }]
+  },
+  {
+    "id": "deep_current_ride",
+    "name": "심해류 타기",
+    "type": "dive",
+    "hidden": false,
+    "description": "깊은 해류에 몸을 실어 더 깊은 곳으로 이동한다.",
+    "effects": [{ "kind": "depthChange", "amount": 60, "target": "self" }]
+  },
+  {
+    "id": "oxygen_bubble",
+    "name": "산소 방울 흡수",
+    "type": "dive",
+    "hidden": false,
+    "description": "떠오르는 산소 방울을 흡수해 잠수를 유지한다.",
+    "effects": [{ "kind": "depthChange", "amount": 30, "target": "self" }]
+  },
+  {
+    "id": "shell_armor",
+    "name": "조개껍질 갑옷",
+    "type": "defense",
+    "hidden": false,
+    "description": "단단한 조개껍질을 둘러 몸을 보호한다.",
+    "effects": [{ "kind": "shield", "amount": 70, "target": "self" }]
+  },
+  {
+    "id": "sand_veil",
+    "name": "모래 장막",
+    "type": "defense",
+    "hidden": false,
+    "description": "바닥의 모래를 일으켜 공격을 흐트러뜨린다.",
+    "effects": [{ "kind": "shield", "amount": 90, "target": "self" }]
+  },
+  {
+    "id": "barnacle_cluster",
+    "name": "따개비 군집",
+    "type": "defense",
+    "hidden": false,
+    "description": "온몸에 따개비를 붙여 단단한 방어막을 형성한다.",
+    "effects": [{ "kind": "shield", "amount": 110, "target": "self" }]
   }
 ]

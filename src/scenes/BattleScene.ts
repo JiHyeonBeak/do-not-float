@@ -6,13 +6,18 @@ import { Deck } from "../cards/Deck";
 import { Card } from "../cards/Card";
 import { CardDatabase } from "../cards/CardDatabase";
 import { HandView } from "../ui/HandView";
-import { DepthGauge } from "../ui/DepthGauge";
-import { DivePowerGauge } from "../ui/DivePowerGauge";
-import { EnemyView } from "../ui/EnemyView";
+import { DepthTrack } from "../ui/DepthTrack";
+import { StatPanel } from "../ui/StatPanel";
+import { SurfaceLine } from "../ui/SurfaceLine";
 import { DialogBox } from "../ui/DialogBox";
+import { formatCardEffects } from "../ui/formatCardEffects";
 import { EventBus, GameEvents } from "../utils/EventBus";
-import { HAND_SIZE } from "../config/Constants";
+import { HAND_SIZE, FONT_FAMILY } from "../config/Constants";
 import { FusionShark } from "../enemies/FusionShark";
+import { AssetKeys } from "../utils/AssetKeys";
+
+const PLAYER_COLOR = 0x4fc3f7;
+const ENEMY_COLOR = 0xff8080;
 
 export class BattleScene extends Phaser.Scene {
   private battleManager!: BattleManager;
@@ -20,9 +25,10 @@ export class BattleScene extends Phaser.Scene {
   private handView!: HandView;
   private player!: Player;
   private enemy!: Enemy;
-  private playerDepthGauge!: DepthGauge;
-  private playerDivePowerGauge!: DivePowerGauge;
-  private enemyView!: EnemyView;
+  private playerDepthTrack!: DepthTrack;
+  private enemyDepthTrack!: DepthTrack;
+  private playerPanel!: StatPanel;
+  private enemyPanel!: StatPanel;
   private dialogBox!: DialogBox;
   private selectedCard: Card | null = null;
 
@@ -36,19 +42,36 @@ export class BattleScene extends Phaser.Scene {
     this.battleManager = new BattleManager(this.player, this.enemy);
     this.deck = new Deck([...CardDatabase.getAll()]);
 
-    this.enemyView = new EnemyView(this, 100, 40, this.enemy);
+    new SurfaceLine(this, 45, 1280);
 
-    this.add.text(100, 540, "플레이어", { fontSize: "18px" });
-    this.playerDepthGauge = new DepthGauge(this, 100, 600);
-    this.playerDivePowerGauge = new DivePowerGauge(this, 100, 630);
-    this.handView = new HandView(this, 300, 650, (card) => this.onCardClicked(card));
+    this.playerDepthTrack = new DepthTrack(
+      this,
+      320,
+      420,
+      280,
+      PLAYER_COLOR,
+      AssetKeys.images.player,
+      AssetKeys.animations.playerIdle
+    );
+    this.enemyDepthTrack = new DepthTrack(this, 1000, 420, 280, ENEMY_COLOR);
+
+    this.playerPanel = new StatPanel(this, 60, 440, "플레이어", true);
+    this.enemyPanel = new StatPanel(this, 800, 60, this.enemy.name, false);
+
+    this.handView = new HandView(
+      this,
+      300,
+      650,
+      (card) => this.onCardClicked(card),
+      (card) => this.onCardDoubleClicked(card)
+    );
 
     this.add
-      .text(950, 690, "턴 종료", { fontSize: "20px" })
+      .text(950, 690, "턴 종료", { fontSize: "20px", fontFamily: FONT_FAMILY })
       .setInteractive({ useHandCursor: true })
       .on("pointerdown", () => this.onEndTurn());
 
-    this.dialogBox = new DialogBox(this, 640, 380);
+    this.dialogBox = new DialogBox(this, 640, 360);
 
     this.handView.render(this.deck.draw(HAND_SIZE));
     this.refreshGauges();
@@ -68,16 +91,33 @@ export class BattleScene extends Phaser.Scene {
     if (this.selectedCard?.id === card.id) {
       this.selectedCard = null;
       this.handView.setSelected(null);
+      this.dialogBox.hide();
       return;
     }
 
     if (!this.battleManager.canPlayCard(card)) {
       this.handView.shakeCard(card.id);
+      this.dialogBox.show("수심이 최대치임으로 잠수 카드를 사용할 수 없습니다.");
       return;
     }
 
     this.selectedCard = card;
     this.handView.setSelected(card.id);
+    this.dialogBox.showPersistent(
+      [card.description, "", formatCardEffects(card.effects)].join("\n")
+    );
+  }
+
+  // 더블클릭은 "선택 + 즉시 턴 종료(사용)"를 한 번에 수행하는 단축 동작이다.
+  private onCardDoubleClicked(card: Card): void {
+    if (!this.battleManager.canPlayCard(card)) {
+      this.handView.shakeCard(card.id);
+      this.dialogBox.show("수심이 최대치임으로 잠수 카드를 사용할 수 없습니다.");
+      return;
+    }
+
+    this.selectedCard = card;
+    this.onEndTurn();
   }
 
   private onEndTurn(): void {
@@ -93,8 +133,9 @@ export class BattleScene extends Phaser.Scene {
   }
 
   private refreshGauges(): void {
-    this.playerDepthGauge.updateDepth(this.player.getDepth());
-    this.playerDivePowerGauge.setDivePower(this.player.getDivePower());
-    this.enemyView.refresh();
+    this.playerDepthTrack.updateDepth(this.player.getDepth());
+    this.enemyDepthTrack.updateDepth(this.enemy.getDepth());
+    this.playerPanel.refresh(this.player);
+    this.enemyPanel.refresh(this.enemy);
   }
 }

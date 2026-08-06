@@ -5,10 +5,18 @@ import { CardView } from "./CardView";
 export class HandView extends Phaser.GameObjects.Container {
   private cardViews: CardView[] = [];
   private onCardClicked?: (card: Card) => void;
+  private onCardDoubleClicked?: (card: Card) => void;
 
-  constructor(scene: Phaser.Scene, x: number, y: number, onCardClicked?: (card: Card) => void) {
+  constructor(
+    scene: Phaser.Scene,
+    x: number,
+    y: number,
+    onCardClicked?: (card: Card) => void,
+    onCardDoubleClicked?: (card: Card) => void
+  ) {
     super(scene, x, y);
     this.onCardClicked = onCardClicked;
+    this.onCardDoubleClicked = onCardDoubleClicked;
     scene.add.existing(this);
   }
 
@@ -23,7 +31,15 @@ export class HandView extends Phaser.GameObjects.Container {
   render(hand: readonly Card[]): void {
     this.cardViews.forEach((view) => view.destroy());
     this.cardViews = hand.map(
-      (card, index) => new CardView(this.scene, index * 130, 0, card, this.onCardClicked)
+      (card, index) =>
+        new CardView(
+          this.scene,
+          index * 130,
+          0,
+          card,
+          this.onCardClicked,
+          this.onCardDoubleClicked
+        )
     );
     this.add(this.cardViews);
   }
