@@ -20,6 +20,9 @@ export type CardEffect =
   | { kind: "damage"; amount: number; target: EffectTarget } // 수심 amount만큼 감소(피해)
   | { kind: "shield"; amount: number; target: EffectTarget } // 잠수력 amount만큼 증가(방어)
   | { kind: "depthChange"; amount: number; target: EffectTarget } // 수심 amount만큼 증감(회복/추가 피해 겸용)
+  | { kind: "stamina"; amount: number; target: EffectTarget } // 스태미너 amount만큼 증감(회복/추가 피해 겸용)
+  | { kind: "healStaminaMaximum" } // 스태미너를 최대치까지 즉시 회복(런에 귀속된 자원이라 대상 지정 불필요)
+  | { kind: "resetEnemyDivePower" } // 상대의 잠수력(방어력)을 0으로 초기화
   | {
       kind: "statusEffect"; // 상태이상(독, 공격력 감소 등)을 duration턴 동안 부여
       status: StatusEffectType;

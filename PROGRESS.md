@@ -52,11 +52,54 @@ Phaser 3 + TypeScript 기반 해양 판타지 1:1 카드 배틀 게임. 이 문�
 - **[data/cards.json](src/data/cards.json)**: 플레이어 카드 20장 (초기 5장 + 공격/잠수/방어 60:20:20 비율로 추가한 15장). 전부 심해·해양생물 테마.
 - **[data/enemyCards.json](src/data/enemyCards.json)**: 적 카드 6장 (크라켄 2장, 핵융합 상어 2장, 불가해파리 2장).
 
-## 8. 아직 안 한 것 / TODO
+## 8. 타이틀 화면
+
+- **[MainMenuScene.ts](src/scenes/MainMenuScene.ts)**: 로고가 포함된 정적 베이스(`title_static.png`) 위에 광원/물결·기포 오버레이 2겹을 겹쳐 잔잔하게 움직이는 수중 타이틀 화면 구성.
+- 타이틀 BGM(`bgm-title`)을 무한루프 재생. **"라이선스"** 로 이동할 때는 멈추지 않고 같은 사운드 인스턴스를 유지한 채 음량만 50%로 낮추고, 돌아오면 100%로 복원. **"시작하기"** 를 눌러 실제 게임을 시작할 때만 정지.
+- 오버레이 스프라이트시트를 8프레임 한 줄(10240px 폭)로 배치했더니 WebGL 최대 텍스처 크기를 넘어 타이틀 화면이 통째로 까맣게 나오던 문제가 있어, 기존 `battle_fx_overly_8.png`와 같은 4×2 그리드로 재배치해서 해결.
+
+## 9. 사운드 시스템 (BGM/SFX)
+
+- **[Enemy.ts](src/entities/Enemy.ts)**의 `bgmKey`(선택 필드)로 적마다 다른 전투 BGM을 지정할 수 있게 하고, 핵융합 상어/크라켄/불가해파리 각각에 전용 BGM 연결. **[BattleScene.ts](src/scenes/BattleScene.ts)**가 전투 시작 시 재생하고 씬을 나갈 때(승리/패배/다음 스테이지 어떤 경로든) 반드시 정지.
+- 플레이어 수심이 `LOW_DEPTH_BGM_THRESHOLD`(200) 이하로 내려가면 전투 BGM 재생 속도를 `LOW_DEPTH_BGM_RATE`(1.5배)로 높여 위기감 연출. 수심이 회복되면 정상 속도로 복귀.
+
+## 10. 상태이상 시스템 (poison / attackDown / stunned)
+
+카드 이펙트 시스템과 동일한 Strategy 패턴으로 구현.
+
+- **[StatusEffectRegistry.ts](src/entities/statusEffects/StatusEffectRegistry.ts)**: 상태이상 종류별로 `onTurnStart`(턴 시작 시 발동, 예: poison 도트 피해), `modifyOutgoingDamage`(공격력 보정, 예: attackDown), `blocksAction`(행동 차단, 예: stunned) 훅을 등록. 새 상태이상을 추가할 때 `src/entities/statusEffects/` 밑에 파일 하나 + `index.ts` 한 줄만 추가하면 되고 `Character`/`BattleManager`는 건드리지 않는다.
+- **[Character.ts](src/entities/Character.ts)**: `resolveTurnStartStatusEffects()`(턴 시작 훅 발동 + 남은 지속시간 차감/만료 제거), `isActionBlocked()`, `getOutgoingDamageModifier()` 추가.
+- **[BattleManager.ts](src/systems/BattleManager.ts)**: 적 턴 시작 시 stunned면 행동을 스킵, 플레이어는 stunned면 `getBlockReason`에서 모든 카드 선택을 차단.
+- 기존엔 상태이상을 걸어도 지속시간이 전혀 줄지 않아 화면에 "(N턴)"이 영구히 남아있던 버그가 있었는데, 이번에 근본 원인(턴 경계에서 tick하는 코드가 아예 없었음)을 고치면서 위 기능 전체를 같이 구현.
+
+## 11. 전투 연출 추가
+
+- **[SprayEffect.ts](src/ui/SprayEffect.ts)**: 수심이 실제로 바뀔 때(피해/잠수 등) 캐릭터 발밑에 1초간 물보라를 띄우는 이펙트. 캐릭터와 겹치지 않도록 캐릭터 아래쪽에 수직으로 배치. **[Character.ts](src/entities/Character.ts)**의 `applyDamage`/`changeDepth`가 (기존엔 정의만 있고 아무도 쓰지 않던) `GameEvents.DepthChanged`를 실제로 발생시키도록 연결해서 트리거.
+- **[DepthTrack.ts](src/ui/DepthTrack.ts)**: 세로 게이지 바 테두리와 상단 수면 물결선(**[SurfaceLine.ts](src/ui/SurfaceLine.ts)**)을 화면에서 숨김(`setVisible(false)`) — 수심 계산·캐릭터 토큰 이동 등 실제 기능은 그대로 유지.
+- 캐릭터 토큰(플레이어/적 공용) 크기를 기존의 2.3배로 확대.
+
+## 12. 스프라이트 리소스 수정
+
+- **[GameConfig.ts](src/config/GameConfig.ts)**에 `pixelArt: true` 추가 — 기본 선형 필터링 탓에 스프라이트시트 인접 프레임 픽셀이 축소 렌더링 시 섞여 보이던 문제 해결.
+- 크라켄/불가해파리 스프라이트가 프레임 대비 그림이 차지하는 비율이 너무 낮아(위아래 여백이 커서) 플레이어보다 훨씬 작게 보이던 문제 — 그림이 실제로 있는 범위만 남기고 각 프레임을 다시 크롭.
+- 크라켄은 그림이 프레임 가로 폭 끝까지 거의 꽉 차 있어 GPU가 인접 프레임을 살짝 침범해 샘플링하는 번짐이 있었음 — 프레임 사이에 실제 투명 간격(spacing)을 둬서 해결.
+- 크라켄 스프라이트가 이후 프레임마다 폭과 간격이 제각각인 형태로 다시 편집되면서 `frameWidth` 기반 균일 그리드 로더로는 자를 수 없게 됨 — **[PreloadScene.ts](src/scenes/PreloadScene.ts)**의 `defineIrregularFrames()`로 프레임마다 실측한 좌표를 직접 텍스처에 등록하는 방식으로 전환.
+- 불가해파리 공격 포즈가 idle 포즈보다 여백 비율이 훨씬 커서 공격 애니메이션 재생 시 캐릭터가 순간적으로 작아져 보이던 문제도 같은 방식으로 재크롭.
+- **[SpriteFit.ts](src/utils/SpriteFit.ts)**: 원본 프레임 비율을 유지한 채 정사각형 슬롯에 맞추는 공용 헬퍼(`setDisplaySize`가 비율을 무시하고 찌그러뜨리는 문제 방지). `DepthTrack`/`MapScene` 등에서 공용으로 사용.
+
+## 13. 버그 수정
+
+- **EventBus 리스너 누수**: `BattleScene`이 매 전투(스테이지)마다 `EventBus.on`을 새로 등록하면서 이전 전투의 리스너를 해제하지 않아, 스테이지를 진행할수록 카드 한 장 낼 때마다 중복 호출이 쌓여 점점 버벅이던 문제. 씬 종료(`SHUTDOWN`) 시 리스너를 해제하도록 수정.
+- **카드 선택 하이라이트 버그**: 손패에 같은 카드가 2장 있으면(예: 창 카드 2장) `id` 기준으로 비교하던 탓에 하나만 클릭해도 둘 다 노란 테두리로 선택 표시되던 문제. `HandView`/`Deck.playFromHand`/`Enemy.useSkill`을 전부 카드 id가 아닌 객체 참조 기준으로 비교하도록 수정.
+- **다중 효과 카드 차단 버그**: 피해+스태미너 회복처럼 효과 2개를 가진 카드가, 스태미너가 이미 최대치라 부가 효과 하나만 막혀도 카드 전체가 통째로 막히던 문제. `CardEffectResolver.canPlay`를 "모든 효과가 유효해야 함"(`every`)에서 "하나라도 유효하면 됨"(`some`)으로 변경.
+- **스태미너 관련 상태 이중 관리 버그**: `RunManager`(실제 표시/소비되는 자원)와 `Character`(쓰이지 않던 별도 필드) 두 곳에서 스태미너를 따로 들고 있던 탓에 "최대치" 판정이 화면과 안 맞던 문제들을 스태미너 회복 로직 전체를 `RunManager` 하나로 통일해서 해결.
+- **런 재시작 버그**: `GameOverScene`에 처음으로 돌아갈 방법이 없었고, `RunManager.reset()`도 어디서도 호출된 적이 없어 재시작해도 이전 런의 스테이지 진행도·스태미너·획득 카드가 남아있던 문제. **"처음으로"** 버튼 추가 + `RunManager.reset()`을 실제 시작 시점에 연결.
+- **부팅 실패 버그**: `cards.json`에 `CardEffectRegistry`에 등록되지 않은 이펙트(`healStaminaMaximum`, 오타가 있던 `cancelEnemysheid`)가 추가되면서 앱이 아예 부팅되지 않던 문제. 두 핸들러를 정식 구현하고 오타는 `resetEnemyDivePower`로 정정.
+
+## 14. 아직 안 한 것 / TODO
 
 - 로그라이크 진행(`MapScene`, `RewardScene`, `RunManager`)은 스캐폴드만 있고 실제 지역 선택·카드 보상·강화 로직은 미구현.
-- 적 UI에도 전용 스프라이트/애니메이션 없음(플레이어만 적용됨).
-- 사운드(BGM/효과음) 전혀 미구현 — `AssetKeys.audio`만 정의된 상태.
 - `EnemyAI`의 "defense"/"dive"/"special" 결정에 대응하는 실제 행동 로직 없음(현재는 "attack"만 실제로 카드를 사용함).
 - 라이선스 화면에는 짧은 저작권 고지만 있고, SIL OFL 전문은 아직 넣지 않음(사용자 확인 대기 중이었음).
-- git: 최초 스캐폴딩 커밋(`4217da8`) 이후의 모든 작업이 아직 커밋되지 않은 상태 (git 사용자 정보 미설정으로 커밋 보류됨).
+- poison/attackDown/stunned 외의 새 상태이상은 아직 없음(레지스트리 구조만 마련된 상태).
+- 플레이어는 아직 stunned로 실제 차단되는 카드가 없음(적 전용 카드만 존재, 구조상 대칭 지원은 이미 됨).

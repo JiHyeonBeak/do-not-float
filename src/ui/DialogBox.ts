@@ -6,6 +6,7 @@ const FADE_DURATION_MS = 300;
 const BOX_WIDTH = 520;
 const BOX_HEIGHT = 150;
 const TEXT_WRAP_WIDTH = 460;
+const DEFAULT_FONT_SIZE = "16px";
 
 // 카드 설명/효과를 보여주는 안내창. 내용 길이와 무관하게 항상 고정된 크기로 뜬다.
 // show()는 잠깐 떴다가 자동으로 사라지고(카드 사용 알림),
@@ -34,13 +35,13 @@ export class DialogBox extends Phaser.GameObjects.Container {
     this.setAlpha(0);
   }
 
-  show(message: string): void {
-    this.displayText(message);
+  show(message: string, fontSize: string = DEFAULT_FONT_SIZE): void {
+    this.displayText(message, fontSize);
     this.hideTimer = this.scene.time.delayedCall(DISPLAY_DURATION_MS, () => this.fadeOut());
   }
 
-  showPersistent(message: string): void {
-    this.displayText(message);
+  showPersistent(message: string, fontSize: string = DEFAULT_FONT_SIZE): void {
+    this.displayText(message, fontSize);
   }
 
   hide(): void {
@@ -48,9 +49,10 @@ export class DialogBox extends Phaser.GameObjects.Container {
     this.fadeOut();
   }
 
-  private displayText(message: string): void {
+  private displayText(message: string, fontSize: string): void {
     this.hideTimer?.remove();
     this.scene.tweens.killTweensOf(this);
+    this.text.setFontSize(fontSize);
     this.text.setText(message);
     this.setAlpha(1);
   }

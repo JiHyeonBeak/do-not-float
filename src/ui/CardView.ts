@@ -1,5 +1,6 @@
 import Phaser from "phaser";
 import { Card } from "../cards/Card";
+import { getCardCost } from "../cards/CardCost";
 import { FONT_FAMILY } from "../config/Constants";
 
 const DEFAULT_STROKE = { width: 2, color: 0xffffff };
@@ -28,6 +29,13 @@ export class CardView extends Phaser.GameObjects.Container {
       fontSize: "12px",
       fontFamily: FONT_FAMILY,
     });
+    const costText = scene.add
+      .text(50, -70, `${getCardCost(card.effects)}`, {
+        fontSize: "14px",
+        fontFamily: FONT_FAMILY,
+        color: "#ffd23f",
+      })
+      .setOrigin(1, 0);
 
     this.background.setInteractive({ useHandCursor: true });
 
@@ -44,7 +52,7 @@ export class CardView extends Phaser.GameObjects.Container {
       }
     });
 
-    this.add([this.background, nameText]);
+    this.add([this.background, nameText, costText]);
     scene.add.existing(this);
   }
 

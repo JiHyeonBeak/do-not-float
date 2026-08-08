@@ -1,5 +1,6 @@
 import { CardEffectRegistry, resolveEffectTarget } from "./CardEffectRegistry";
 
 CardEffectRegistry.register("damage", (effect, ctx) => {
-  resolveEffectTarget(effect.target, ctx).applyDamage(effect.amount);
+  const amount = ctx.source.getOutgoingDamageModifier(effect.amount);
+  resolveEffectTarget(effect.target, ctx).applyDamage(amount);
 });

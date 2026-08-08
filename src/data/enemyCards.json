@@ -10,12 +10,33 @@
     ]
   },
   {
+    "id": "krakens_curse",
+    "name": "크라켄의 저주",
+    "type": "special",
+    "description": "상대에게 고대 심해 저주를 내린다.",
+    "enemyId": "kraken",
+    "effects": [
+      { "kind": "statusEffect", "status": "attackDown", "amount": 20, "duration": 1, "target": "opponent" },
+      { "kind": "damage", "amount": 200, "target": "opponent" }
+    ]
+  },
+  {
+    "id": "slap_with_tentacle",
+    "name": "촉수 따귀",
+    "type": "attack",
+    "description": "촉수로 뺨을 때린다.",
+    "enemyId": "kraken",
+    "effects": [
+      { "kind": "damage", "amount": 50, "target": "opponent" }
+    ]
+  },
+  {
     "id": "coral_carapace",
     "name": "산호 갑주",
     "type": "defense",
     "description": "단단한 산호 껍질로 몸을 감싼다.",
     "enemyId": "kraken",
-    "effects": [{ "kind": "shield", "amount": 80, "target": "self" }]
+    "effects": [{ "kind": "shield", "amount": 180, "target": "self" }]
   },
   {
     "id": "berserk_charge",
@@ -58,7 +79,7 @@
     "description": "독이 흐르는 전류로 상대를 서서히 갉아먹는다.",
     "enemyId": "unfathomable_jellyfish",
     "effects": [
-      { "kind": "statusEffect", "status": "poison", "amount": 30, "duration": 3, "target": "opponent" }
+      { "kind": "statusEffect", "status": "poison", "amount": 100, "duration": 3, "target": "opponent" }
     ]
   },
   {
@@ -67,6 +88,6 @@
     "type": "attack",
     "description": "흐느적거리는 촉수로 약하게 찌른다.",
     "enemyId": "unfathomable_jellyfish",
-    "effects": [{ "kind": "damage", "amount": 80, "target": "opponent" }]
+    "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" }]
   }
 ]

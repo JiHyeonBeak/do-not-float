@@ -15,6 +15,9 @@ export const GameConfig: Phaser.Types.Core.GameConfig = {
   height: 720,
   parent: "game-container",
   backgroundColor: "#021627",
+  // 기본값(선형 필터링)은 스프라이트시트 프레임 경계(특히 그림이 프레임 끝까지 꽉 찬 kraken)에서
+  // 인접 프레임 픽셀이 섞여 보이는 번짐 현상을 만든다. 픽셀아트라 nearest 필터가 맞기도 하다.
+  pixelArt: true,
   scene: [
     BootScene,
     PreloadScene,

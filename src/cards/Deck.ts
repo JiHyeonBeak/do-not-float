@@ -1,16 +1,16 @@
-import { Card } from "./Card";
+// id만 있으면 어떤 카드 형태든(Card, EnemyCard ...) 다룰 수 있는 범용 덱.
+// 뽑기/사용/버림더미 재셔플 로직은 카드 종류와 무관하게 동일하다.
+export class Deck<T extends { id: string }> {
+  private drawPile: T[];
+  private discardPile: T[] = [];
+  private hand: T[] = [];
 
-export class Deck {
-  private drawPile: Card[];
-  private discardPile: Card[] = [];
-  private hand: Card[] = [];
-
-  constructor(cards: Card[]) {
+  constructor(cards: T[]) {
     this.drawPile = this.shuffle([...cards]);
   }
 
-  draw(count: number): Card[] {
-    const drawn: Card[] = [];
+  draw(count: number): T[] {
+    const drawn: T[] = [];
     for (let i = 0; i < count; i++) {
       if (this.drawPile.length === 0) this.reshuffleDiscardIntoDraw();
       const card = this.drawPile.pop();
@@ -20,15 +20,17 @@ export class Deck {
     return drawn;
   }
 
-  playFromHand(cardId: string): Card | undefined {
-    const index = this.hand.findIndex((card) => card.id === cardId);
+  // id가 아니라 카드 인스턴스(객체 참조)로 찾는다. 손패에 같은 id의 카드가 여러 장 있을 수
+  // 있어서(예: 창 카드 2장) id로 찾으면 항상 먼저 나온 쪽만 걸려 사용자가 고른 것과 어긋난다.
+  playFromHand(card: T): T | undefined {
+    const index = this.hand.indexOf(card);
     if (index === -1) return undefined;
-    const [card] = this.hand.splice(index, 1);
-    this.discardPile.push(card);
-    return card;
+    const [played] = this.hand.splice(index, 1);
+    this.discardPile.push(played);
+    return played;
   }
 
-  getHand(): readonly Card[] {
+  getHand(): readonly T[] {
     return this.hand;
   }
 
@@ -37,7 +39,7 @@ export class Deck {
     this.discardPile = [];
   }
 
-  private shuffle(cards: Card[]): Card[] {
+  private shuffle(cards: T[]): T[] {
     for (let i = cards.length - 1; i > 0; i--) {
       const j = Math.floor(Math.random() * (i + 1));
       [cards[i], cards[j]] = [cards[j], cards[i]];

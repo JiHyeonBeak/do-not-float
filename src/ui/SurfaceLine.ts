@@ -15,5 +15,8 @@ export class SurfaceLine extends Phaser.GameObjects.Graphics {
     }
     this.strokePath();
     scene.add.existing(this);
+    // 화면에는 그리지 않되(디자인 변경으로 UI에서 숨김), 해수면 y좌표를 기준으로 삼는
+    // 다른 로직(DepthTrack 높이 계산 등)에는 영향이 없도록 오브젝트 자체는 유지한다.
+    this.setVisible(false);
   }
 }
