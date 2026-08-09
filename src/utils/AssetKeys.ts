@@ -21,6 +21,9 @@ export const AssetKeys = {
     backgroundGameOver: "background-gameover",
     backgroundGameOverLayer1: "background-gameover-layer1",
     backgroundGameOverLayer2: "background-gameover-layer2",
+    // 엔딩(스태프롤) 배경도 같은 구성: 정적 베이스(1장) + 그 위에 겹치는 광원/파티클 레이어(8프레임) 1겹.
+    backgroundEnding: "background-ending",
+    backgroundEndingLayer1: "background-ending-layer1",
     // 수심 변화(피해/잠수) 때 캐릭터 발밑에 잠깐 띄우는 물보라 이펙트.
     effectSpray: "effect-spray",
     // 맵(스테이지 선택) 배경: 금속 원형 틀 4개 + 하단 버튼 프레임이 그려진 정적 이미지 1장.
@@ -51,6 +54,7 @@ export const AssetKeys = {
     backgroundTitleOverlay2Ambient: "background-title-overlay2-ambient",
     backgroundGameOverLayer1Ambient: "background-gameover-layer1-ambient",
     backgroundGameOverLayer2Ambient: "background-gameover-layer2-ambient",
+    backgroundEndingLayer1Ambient: "background-ending-layer1-ambient",
     effectSpray: "effect-spray-ambient",
   },
   audio: {
@@ -61,8 +65,10 @@ export const AssetKeys = {
     bgmKrakenBattle: "bgm-kraken-battle",
     bgmNeonAnsiBattle: "bgm-neon-ansi-battle",
     bgmMap: "bgm-map",
+    bgmEnding: "bgm-ending",
     sfxCardSelect: "sfx-card-select",
     sfxCardPlay: "sfx-card-play",
+    sfxCardDraw: "sfx-card-draw",
     sfxAttack: "sfx-attack",
     sfxDive: "sfx-dive",
     sfxDefend: "sfx-defend",

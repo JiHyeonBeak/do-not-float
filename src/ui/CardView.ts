@@ -7,7 +7,6 @@ import { AssetKeys } from "../utils/AssetKeys";
 export const CARD_WIDTH = 170;
 export const CARD_HEIGHT = 220; // card.png 원본(1024x1536)과 같은 2:3 비율
 
-const DEFAULT_STROKE = { width: 2, color: 0xffffff };
 const SELECTED_STROKE = { width: 4, color: 0xffd23f };
 const DOUBLE_CLICK_THRESHOLD_MS = 300;
 
@@ -30,12 +29,12 @@ const CARD_ART_OVERRIDES: Partial<Record<string, CardArtOverride>> = {
   crazy_shark_eye: {
     frameKey: AssetKeys.images.cardFrameCrazySharkEye,
     nameSlot: { x: -19, y: -92, wrapWidth: 85 },
-    costSlot: { x: 48, y: -92 },
+    costSlot: { x: 48, y: -91 },
   },
   ansis_curious: {
     frameKey: AssetKeys.images.cardFrameAnsisCurious,
-    nameSlot: { x: -19, y: -92, wrapWidth: 85 },
-    costSlot: { x: 48, y: -92 },
+    nameSlot: { x: -19, y: -95, wrapWidth: 85 },
+    costSlot: { x: 48, y: -95 },
   },
   jellyfish_airpump: {
     frameKey: AssetKeys.images.cardFrameJellyfishAirpump,
@@ -66,10 +65,8 @@ export class CardView extends Phaser.GameObjects.Container {
     const costSlot = artOverride?.costSlot ?? COST_SLOT;
 
     this.frame = scene.add.image(0, 0, frameKey).setDisplaySize(CARD_WIDTH, CARD_HEIGHT);
-    // 카드 프레임 자체엔 테두리가 없으므로, 선택 상태를 보여줄 얇은 테두리를 그 위에 겹친다.
-    this.selectionBorder = scene.add
-      .rectangle(0, 0, CARD_WIDTH, CARD_HEIGHT)
-      .setStrokeStyle(DEFAULT_STROKE.width, DEFAULT_STROKE.color);
+    // 선택되었을 때만 노란 테두리를 그려 보여줄 사각형. 평소엔 투명하다(테두리 없음).
+    this.selectionBorder = scene.add.rectangle(0, 0, CARD_WIDTH, CARD_HEIGHT);
 
     const nameText = scene.add
       .text(nameSlot.x, nameSlot.y, card.name, {
@@ -108,8 +105,11 @@ export class CardView extends Phaser.GameObjects.Container {
   }
 
   setSelected(selected: boolean): void {
-    const stroke = selected ? SELECTED_STROKE : DEFAULT_STROKE;
-    this.selectionBorder.setStrokeStyle(stroke.width, stroke.color);
+    if (selected) {
+      this.selectionBorder.setStrokeStyle(SELECTED_STROKE.width, SELECTED_STROKE.color);
+    } else {
+      this.selectionBorder.setStrokeStyle(0);
+    }
   }
 
   shake(): void {

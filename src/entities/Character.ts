@@ -65,6 +65,14 @@ export abstract class Character {
     return this.statusEffects;
   }
 
+  // 상태이상 중 남은 턴수가 가장 많은 것 하나를 제거한다(디버프 해제 카드용). 상태이상이 없으면
+  // 아무 일도 하지 않는다.
+  removeStrongestStatusEffect(): void {
+    if (this.statusEffects.length === 0) return;
+    const strongest = this.statusEffects.reduce((a, b) => (b.remainingTurns > a.remainingTurns ? b : a));
+    this.statusEffects = this.statusEffects.filter((effect) => effect !== strongest);
+  }
+
   // stunned처럼 행동을 막는 상태이상이 하나라도 있으면 true. 어떤 상태이상이 행동을 막는지는
   // StatusEffectRegistry에 등록된 내용으로 결정되며, Character는 그 판단 방식을 모른다.
   isActionBlocked(): boolean {

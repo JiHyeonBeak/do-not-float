@@ -20,4 +20,10 @@ export class EnemyDatabase {
     if (!entry) throw new Error(`Unknown enemy id: ${id}`);
     return { depth: entry.depth, divePower: entry.divePower };
   }
+
+  static getName(id: string): string {
+    const entry = this.byId.get(id);
+    if (!entry) throw new Error(`Unknown enemy id: ${id}`);
+    return entry.name;
+  }
 }

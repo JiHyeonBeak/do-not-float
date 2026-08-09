@@ -85,7 +85,38 @@
       "Bash(taskkill //PID 4284 //F)",
       "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_buttons.js\")",
       "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_button_click.js\")",
-      "Bash(taskkill //PID 28508 //F)"
+      "Bash(taskkill //PID 28508 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_selection_border.js\")",
+      "Bash(taskkill //PID 5764 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_spray2.js\")",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_spray_zoom.js\")",
+      "Bash(taskkill //PID 27304 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_draw_sfx.js\")",
+      "Bash(taskkill //PID 14852 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_reward.js\")",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_reward_none.js\")",
+      "Bash(taskkill //PID 22504 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_victory.js\")",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_victory_loop.js\")",
+      "Bash(taskkill //PID 5488 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_ending_full.js\")",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_ending_clear.js\")",
+      "Bash(taskkill //PID 26028 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_pulse.js\")",
+      "Bash(taskkill //PID 11864 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_stun_display.js\")",
+      "Bash(taskkill //PID 19108 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_poison_defeat.js\")",
+      "Bash(taskkill //PID 27324 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_cancel_debuff.js\")",
+      "Bash(taskkill //PID 4192 //F)",
+      "Bash(NODE_PATH=\"$\\(pwd\\)/node_modules\" node \"C:\\\\Users\\\\대마왕~1\\\\AppData\\\\Local\\\\Temp\\\\claude\\\\c--Users--------OneDrive-------repository-do-not-foalt\\\\9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5ef\\\\scratchpad\\\\check_cancel_debuff2.js\")",
+      "Bash(taskkill //PID 25072 //F)",
+      "Bash(git check-ignore *)",
+      "Bash(cd \"c:\\\\Users\\\\대마왕의 성\\\\OneDrive\\\\바탕 화면\\\\repository\\\\do-not-foalt\" && rm -f \"Users대마왕~1AppDataLocalTempclaudec--Users--------OneDrive-------repository-do-not-foalt9dd9d4b6-26bf-4ca9-87a6-dff25bb3c5efscratchpadspray_zoom.png\" && git status --short | grep \"^??\")"
+    ],
+    "additionalDirectories": [
+      "c:\\Users\\대마왕의 성\\OneDrive\\바탕 화면\\repository\\do-not-foalt"
     ]
   }
 }

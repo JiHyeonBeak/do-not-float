@@ -77,6 +77,17 @@ export class PreloadScene extends Phaser.Scene {
       "assets/images/backgrounds/gameover_layer_2.png",
       { frameWidth: 1280, frameHeight: 720 }
     );
+    // 엔딩(스태프롤) 배경도 동일 구성: 해저 궁전이 그려진 정적 베이스 1장 위에
+    // 광원/파티클 애니메이션 레이어 1겹을 겹쳐 재생한다.
+    // 원본은 1280x720 프레임 8장이 가로로 1x8 나열돼(10240px) WebGL 최대 텍스처 크기(8192px)를
+    // 넘어 로드 시 검은 화면이 되므로, title/gameover 오버레이와 동일하게 4x2 그리드(5120x1440)로
+    // 재배치한 파일을 쓴다.
+    this.load.image(AssetKeys.images.backgroundEnding, "assets/images/backgrounds/ending_static.png");
+    this.load.spritesheet(
+      AssetKeys.images.backgroundEndingLayer1,
+      "assets/images/backgrounds/ending_layout_1.png",
+      { frameWidth: 1280, frameHeight: 720 }
+    );
     // 맵 배경: 금속 원형 틀 4개 + 하단 버튼 프레임이 그려진 단일 정적 이미지.
     this.load.image(AssetKeys.images.backgroundMap, "assets/images/ui/roardmap.png");
     // 범용 버튼 프레임(단일 정적 이미지). 전투 화면의 재셔플/카드 뽑기/턴 종료 버튼 등에 공용으로 쓴다.
@@ -112,12 +123,10 @@ export class PreloadScene extends Phaser.Scene {
         frameHeight: 272,
       }
     );
-    // 수심 변화 이펙트: 384x274 프레임 4장, 프레임 사이 8px 간격(kraken과 동일한 이유로 추가).
-    this.load.spritesheet(AssetKeys.images.effectSpray, "assets/images/effects/spray.png", {
-      frameWidth: 360,
-      frameHeight: 274,
-      spacing: 8,
-    });
+    // 수심 변화 이펙트: 물보라 4장이 가로로 나열돼 있지만 프레임마다 폭이 제각각이라(그림마다
+    // 개별적으로 트리밍됨) frameWidth 기반 균일 그리드로는 자를 수 없다. kraken과 동일하게
+    // 이미지로 로드하고 create()에서 defineIrregularFrames()로 실측한 좌표를 직접 등록한다.
+    this.load.image(AssetKeys.images.effectSpray, "assets/images/effects/spray.png");
     // 네온 안시: idle/attack 둘 다 물고기마다 폭이 균일하지 않아(그림마다 개별 트리밍됨)
     // frameWidth 기반 균일 그리드로는 자를 수 없다. kraken과 동일하게 이미지로 로드하고
     // create()에서 defineIrregularFrames()로 실측한 좌표를 직접 등록한다.
@@ -129,6 +138,8 @@ export class PreloadScene extends Phaser.Scene {
     this.load.audio(AssetKeys.audio.sfxDive, "assets/audio/sfx/dive.mp3");
     this.load.audio(AssetKeys.audio.sfxDefend, "assets/audio/sfx/defense.mp3");
     this.load.audio(AssetKeys.audio.sfxDeath, "assets/audio/sfx/death.mp3");
+    // "카드 뽑기" 버튼 사용 시 재생하는 효과음.
+    this.load.audio(AssetKeys.audio.sfxCardDraw, "assets/audio/sfx/pickup.mp3");
     // Enemy 전투 전용 BGM. 
     this.load.audio(AssetKeys.audio.bgmFusionSharkBattle, "assets/audio/bgm/shark_battle.mp3");
     this.load.audio(AssetKeys.audio.bgmJellyfishBattle, "assets/audio/bgm/jellyfish_battle.mp3");
@@ -136,6 +147,7 @@ export class PreloadScene extends Phaser.Scene {
     this.load.audio(AssetKeys.audio.bgmNeonAnsiBattle, "assets/audio/bgm/ansi_battle.mp3");
     this.load.audio(AssetKeys.audio.bgmTitle, "assets/audio/bgm/title.mp3");
     this.load.audio(AssetKeys.audio.bgmMap, "assets/audio/bgm/roadmap.mp3");
+    this.load.audio(AssetKeys.audio.bgmEnding, "assets/audio/bgm/ending.mp3");
   }
 
   create(): void {
@@ -180,6 +192,19 @@ export class PreloadScene extends Phaser.Scene {
         { x: 1216, width: 344 },
       ],
       410
+    );
+    // spray.png(1420x276)도 프레임마다 폭이 제각각이고, 그림 자체도 위아래 여백이 커서
+    // (실제 물보라는 y=40~236 구간에만 있음) 실측한 x/폭 + 공통 y/높이로 직접 등록한다.
+    this.defineIrregularFrames(
+      AssetKeys.images.effectSpray,
+      [
+        { x: 23, width: 323 },
+        { x: 379, width: 304 },
+        { x: 718, width: 321 },
+        { x: 1079, width: 308 },
+      ],
+      205,
+      36
     );
 
     this.anims.create({
@@ -261,6 +286,16 @@ export class PreloadScene extends Phaser.Scene {
     });
 
     this.anims.create({
+      key: AssetKeys.animations.backgroundEndingLayer1Ambient,
+      frames: this.anims.generateFrameNumbers(AssetKeys.images.backgroundEndingLayer1, {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
       key: AssetKeys.animations.krakenIdle,
       frames: this.anims.generateFrameNumbers(AssetKeys.images.kraken, { start: 0, end: 3 }),
       frameRate: 6,
@@ -323,11 +358,12 @@ export class PreloadScene extends Phaser.Scene {
   private defineIrregularFrames(
     key: string,
     frames: readonly { x: number; width: number }[],
-    height: number
+    height: number,
+    y = 0
   ): void {
     const texture = this.textures.get(key);
     frames.forEach((frame, index) => {
-      texture.add(index, 0, frame.x, 0, frame.width, height);
+      texture.add(index, 0, frame.x, y, frame.width, height);
     });
   }
 }

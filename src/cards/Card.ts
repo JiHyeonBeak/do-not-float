@@ -30,7 +30,8 @@ export type CardEffect =
       duration: number;
       target: EffectTarget;
     }
-  | { kind: "cancelNextEnemyAction" }; // 상대를 1턴 기절(stunned) 시켜 다음 행동을 무효화
+  | { kind: "cancelNextEnemyAction" } // 상대를 1턴 기절(stunned) 시켜 다음 행동을 무효화
+  | { kind: "cancelDebuff" }; // 카드를 낸 쪽 자신의 상태이상 중 남은 턴수가 가장 많은 것 1개 제거
 
 // 카드 한 장의 데이터 정의. data/cards.json에 이 형태로 저장되어 있고,
 // CardDatabase가 읽어서 검증한 뒤 게임 전체에서 사용한다.

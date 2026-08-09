@@ -6,3 +6,4 @@ import "./HealStaminaMaximumEffect";
 import "./ResetEnemyDivePowerEffect";
 import "./ApplyStatusEffect";
 import "./CancelNextEnemyActionEffect";
+import "./CancelDebuffEffect";

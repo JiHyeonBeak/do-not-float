@@ -25,7 +25,7 @@
     "cost": 0,
     "description": "고래의 등에 기대어 휴식을 취한다.",
     "effects": [{ "kind": "stamina", "amount": 3, "target": "self" },
-    { "kind": "depthChange", "amount": 20, "target": "self" }]
+    { "kind": "depthChange", "amount": 40, "target": "self" }]
   },
   {
     "id": "rebreath",
@@ -35,16 +35,79 @@
     "cost": 1,
     "description": "새로운 산소 공급으로 스태미너와 수심을 회복한다.",
     "effects": [{ "kind": "stamina", "amount": 3, "target": "self" },
-    { "kind": "depthChange", "amount": 20, "target": "self" }]
+    { "kind": "depthChange", "amount": 50, "target": "self" }]
+  },
+  {
+    "id": "buoyancy_control",
+    "name": "부력 조절",
+    "type": "dive",
+    "hidden": false,
+    "cost": 1,
+    "description": "부레를 조절해 수심을 안정적으로 유지한다.",
+    "effects": [{ "kind": "depthChange", "amount": 100, "target": "self" }]
+  },
+  {
+    "id": "deep_current_ride",
+    "name": "심해류 타기",
+    "type": "dive",
+    "hidden": false,
+    "cost": 2,
+    "description": "깊은 해류에 몸을 실어 더 깊은 곳으로 이동한다.",
+    "effects": [{ "kind": "depthChange", "amount": 150, "target": "self" }]
+  },
+  {
+    "id": "oxygen_bubble",
+    "name": "산소 흡수",
+    "type": "dive",
+    "hidden": false,
+    "cost": 1,
+    "description": "떠오르는 산소 방울을 흡수해 잠수를 유지한다.",
+    "effects": [{ "kind": "depthChange", "amount": 100, "target": "self" }]
   },
   {
     "id": "current_control",
     "name": "해류 조종",
-    "type": "special",
+    "type": "defense",
     "hidden": false,
     "cost": 3,
     "description": "다음 턴의 적 행동을 1회 취소한다.",
     "effects": [{ "kind": "cancelNextEnemyAction" }]
+  },
+  {
+    "id": "current_control",
+    "name": "해류 조종",
+    "type": "defense",
+    "hidden": false,
+    "cost": 3,
+    "description": "다음 턴의 적 행동을 1회 취소한다.",
+    "effects": [{ "kind": "cancelNextEnemyAction" }]
+  },
+  {
+    "id": "ink_blast",
+    "name": "먹물 폭발",
+    "type": "attack",
+    "hidden": false,
+    "cost": 2,
+    "description": "짙은 먹물을 터뜨려 시야를 가리며 공격한다.\n적의 다음 턴 행동을 1회 취소한다.",
+    "effects": [{ "kind": "cancelNextEnemyAction" }]
+  },
+  {
+    "id": "medicinal_seaweed",
+    "name": "약성 해초",
+    "type": "defense",
+    "hidden": false,
+    "cost": 2,
+    "description": "약초를 먹는다.\n상태 이상 하나를 제거한다.",
+    "effects": [{ "kind": "cancelDebuff" }]
+  },
+  {
+    "id": "medicinal_seaweed",
+    "name": "약성 해초",
+    "type": "defense",
+    "hidden": false,
+    "cost": 2,
+    "description": "약초를 먹는다.\n상태 이상 하나를 제거한다.",
+    "effects": [{ "kind": "cancelDebuff" }]
   },
   {
     "id": "ansis_curious",
@@ -52,7 +115,7 @@
     "type": "special",
     "hidden": true,
     "cost": 1,
-    "description": "네온 안시를 이기면 얻을 수 있는 카드.\n적의 전의를 상실시켜 다음 턴 행동을 1회 취소하고 수심을 일정량 회복한다.",
+    "description": "네온 안시를 이기면 얻을 수 있는 카드.\n적의 전의를 상실시켜 다음 턴 행동을 1회 취소하고\n수심을 일정량 회복한다.",
     "effects": [{ "kind": "cancelNextEnemyAction" }, 
     { "kind": "depthChange", "amount": 50, "target": "self" }]
   },
@@ -91,7 +154,7 @@
     "cost": 2,
     "description": "흡혈징어를 적에게 던져 피해를 주고,\n일정량의 스태미너를 회복한다.",
     "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" },
-    { "kind": "stamina", "amount": 5, "target": "self" }]
+    { "kind": "stamina", "amount": 2, "target": "self" }]
   },
   {
     "id": "succion_seastar",
@@ -101,7 +164,7 @@
     "cost": 2,
     "description": "흡혈징어를 적에게 던져 피해를 주고,\n일정량의 스태미너를 회복한다.",
     "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" },
-    { "kind": "stamina", "amount": 5, "target": "self" }]
+    { "kind": "stamina", "amount": 2, "target": "self" }]
   },
   {
     "id": "electric_eel_shock",
@@ -109,7 +172,7 @@
     "type": "attack",
     "hidden": false,
     "cost": 4,
-    "description": "호출된 전기장어가 적에게 강력한 전류를 흘려보낸다.",
+    "description": "불러낸 전기장어가 적에게 강력한 전류를 흘려보낸다.",
     "effects": [{ "kind": "damage", "amount": 400, "target": "opponent" }]
   },
   {
@@ -118,17 +181,8 @@
     "type": "attack",
     "hidden": false,
     "cost": 4,
-    "description": "호출된 전기장어가 적에게 강력한 전류를 흘려보낸다.",
+    "description": "불러낸 전기장어가 적에게 강력한 전류를 흘려보낸다.",
     "effects": [{ "kind": "damage", "amount": 400, "target": "opponent" }]
-  },
-  {
-    "id": "ink_blast",
-    "name": "먹물 폭발",
-    "type": "attack",
-    "hidden": false,
-    "cost": 2,
-    "description": "짙은 먹물을 터뜨려 시야를 가리며 공격한다.\n적의 다음 턴 행동을 1회 취소한다.",
-    "effects": [{ "kind": "cancelNextEnemyAction" }]
   },
   {
     "id": "tidal_slam",
@@ -147,15 +201,6 @@
     "cost": 4,
     "description": "불러낸 백상아리가 전속력으로 몸을 던져 적을 들이받는다.",
     "effects": [{ "kind": "damage", "amount": 350, "target": "opponent" }]
-  },
-  {
-    "id": "kraken_tentacle_strike",
-    "name": "크라켄의 촉수",
-    "type": "attack",
-    "hidden": true,
-    "cost": 1,
-    "description": "크라켄 인어를 쓰러트리고 얻은 카드. 거대한 촉수가 휘몰아치며 적을 후려친다.",
-    "effects": [{ "kind": "damage", "amount": 190, "target": "opponent" }]
   },
   {
     "id": "bioluminescent_flare",
@@ -183,33 +228,6 @@
     "cost": 1,
     "description": "날카롭게 벼려진 산호 조각을 창처럼 쏘아 보낸다.",
     "effects": [{ "kind": "damage", "amount": 150, "target": "opponent" }]
-  },
-  {
-    "id": "buoyancy_control",
-    "name": "부력 조절",
-    "type": "dive",
-    "hidden": false,
-    "cost": 1,
-    "description": "부레를 조절해 수심을 안정적으로 유지한다.",
-    "effects": [{ "kind": "depthChange", "amount": 70, "target": "self" }]
-  },
-  {
-    "id": "deep_current_ride",
-    "name": "심해류 타기",
-    "type": "dive",
-    "hidden": false,
-    "cost": 2,
-    "description": "깊은 해류에 몸을 실어 더 깊은 곳으로 이동한다.",
-    "effects": [{ "kind": "depthChange", "amount": 100, "target": "self" }]
-  },
-  {
-    "id": "oxygen_bubble",
-    "name": "산소 흡수",
-    "type": "dive",
-    "hidden": false,
-    "cost": 1,
-    "description": "떠오르는 산소 방울을 흡수해 잠수를 유지한다.",
-    "effects": [{ "kind": "depthChange", "amount": 50, "target": "self" }]
   },
   {
     "id": "shell_armor",

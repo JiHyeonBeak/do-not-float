@@ -25,6 +25,7 @@ import {
 import { EnemyFactory } from "../entities/EnemyFactory";
 import { EnemyDatabase } from "../entities/EnemyDatabase";
 import { AssetKeys } from "../utils/AssetKeys";
+import { RewardSceneData } from "./RewardScene";
 
 export interface BattleSceneData {
   enemyId: string;
@@ -47,9 +48,10 @@ const DEPTH_TRACK_HEIGHT = DEPTH_TRACK_BOTTOM_Y - SURFACE_Y;
 
 const BLOCK_REASON_MESSAGES: Record<CardBlockReason, string> = {
   insufficientStamina: "스태미나가 부족하여 카드를 사용할 수 없습니다.",
-  depthMax: "수심이 최대치임으로 잠수 카드를 사용할 수 없습니다.",
-  staminaMax: "스태미너가 최대치임으로 스태미너 카드를 사용할 수 없습니다.",
+  depthMax: "수심이 최대치임으로\n잠수 카드를 사용할 수 없습니다.",
+  staminaMax: "스태미너가 최대치임으로\n스태미너 카드를 사용할 수 없습니다.",
   stunned: "기절 상태라 카드를 사용할 수 없습니다.",
+  noDebuffToCancel: "제거할 상태이상이 없어\n카드를 사용할 수 없습니다.",
 };
 
 const HAND_FULL_MESSAGE = "손에 들 수 있는 카드가 최대치입니다.";
@@ -201,7 +203,12 @@ export class BattleScene extends Phaser.Scene {
   private onBattleEnded(result: "victory" | "defeat"): void {
     // 플레이어든 적이든 수심 0에 도달해 전투가 끝난 상황이라 승패와 무관하게 재생한다.
     this.sound.play(AssetKeys.audio.sfxDeath);
-    this.scene.start(result === "victory" ? "Reward" : "GameOver");
+    if (result === "victory") {
+      const grantedCard = this.battleManager.getLastGrantedCard();
+      this.scene.start("Reward", { grantedCard } as RewardSceneData);
+    } else {
+      this.scene.start("GameOver");
+    }
   }
 
   // 카드를 클릭하면 즉시 사용되지 않고 "선택"만 된다. 같은 카드를 다시 클릭하면 선택 해제,
@@ -251,6 +258,7 @@ export class BattleScene extends Phaser.Scene {
 
     this.deck.draw(HAND_SIZE - this.deck.getHand().length);
     this.handView.render(this.deck.getHand());
+    this.sound.play(AssetKeys.audio.sfxCardDraw);
   }
 
   // "재셔플": 아직 사용하지 않은 현재 손패를 전부 되돌리고 그 중에서 무작위로 다시 뽑아
@@ -287,6 +295,10 @@ export class BattleScene extends Phaser.Scene {
       }
 
       this.selectedCard = null;
+
+      // 카드 효과(상태이상 부여 등)를 즉시 반영해서 보여준다. 특히 1턴짜리 상태이상은 곧이어
+      // 적 턴이 진행되며 바로 소모되므로, 여기서 갱신하지 않으면 상태창에 뜰 기회 자체가 없다.
+      this.refreshGauges();
     }
 
     // 플레이어 턴이 끝났음을 잠깐 알린 뒤 적 턴을 진행한다.

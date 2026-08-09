@@ -96,10 +96,53 @@ Phaser 3 + TypeScript 기반 해양 판타지 1:1 카드 배틀 게임. 이 문�
 - **런 재시작 버그**: `GameOverScene`에 처음으로 돌아갈 방법이 없었고, `RunManager.reset()`도 어디서도 호출된 적이 없어 재시작해도 이전 런의 스테이지 진행도·스태미너·획득 카드가 남아있던 문제. **"처음으로"** 버튼 추가 + `RunManager.reset()`을 실제 시작 시점에 연결.
 - **부팅 실패 버그**: `cards.json`에 `CardEffectRegistry`에 등록되지 않은 이펙트(`healStaminaMaximum`, 오타가 있던 `cancelEnemysheid`)가 추가되면서 앱이 아예 부팅되지 않던 문제. 두 핸들러를 정식 구현하고 오타는 `resetEnemyDivePower`로 정정.
 
-## 14. 아직 안 한 것 / TODO
+## 14. 히든 카드 전용 아트 & 프레임 오버레이
 
-- 로그라이크 진행(`MapScene`, `RewardScene`, `RunManager`)은 스캐폴드만 있고 실제 지역 선택·카드 보상·강화 로직은 미구현.
-- `EnemyAI`의 "defense"/"dive"/"special" 결정에 대응하는 실제 행동 로직 없음(현재는 "attack"만 실제로 카드를 사용함).
+- **[CardView.ts](src/ui/CardView.ts)**: `CARD_ART_OVERRIDES` 맵(카드 id → 전용 프레임 이미지 키 + 이름칸/코스트칸 좌표)을 추가. 히든 카드(미친 상어의 눈빛/안시의 호기심/해파리 펌프 등)는 카드마다 개별 원화가 들어간 전용 프레임을 쓰고, 슬롯 위치가 기본 카드와 달라도 카드별로 따로 지정 가능. 새 히든 카드를 추가할 땐 AssetKeys/PreloadScene에 이미지 등록 + 이 맵에 항목 하나만 추가하면 된다.
+- 손패 카드의 선택 테두리를 평소엔 완전히 투명하게, 선택됐을 때만 노란 테두리가 나타나도록 수정(기존엔 항상 흰 테두리가 겹쳐 보이던 문제).
+
+## 15. 손패 조작 개편: 카드 뽑기 무제한화 + 재셔플 추가
+
+- **"카드 뽑기"**: 기존엔 스테이지당 3회 제한이 있었는데, 이제 손패 빈 슬롯이 있으면 횟수 제한 없이 뽑을 수 있음(카드 뽑기 시 `pickup.mp3` 효과음 재생).
+- **"재셔플"** 버튼 신설: 아직 사용하지 않은 손패를 전부 되돌려 섞은 뒤 다시 뽑는다(이미 사용한 카드는 대상에서 제외). 기존에 "카드 뽑기"가 쓰던 스테이지당 3회 제한 자원을 이쪽으로 이전. **[Deck.ts](src/cards/Deck.ts)**의 `reshuffleHand()`, **[RunManager.ts](src/systems/RunManager.ts)**의 `remainingReshuffles`로 구현.
+- **[Button.ts](src/ui/Button.ts)**: `button.png` 프레임 위에 라벨 텍스트를 겹쳐 그리는 범용 버튼 컴포넌트 신설. 전투 화면의 재셔플/카드 뽑기/턴 종료 버튼을 전부 이 컴포넌트로 교체(기존엔 테두리 없는 순수 텍스트 버튼).
+
+## 16. 보상 화면(RewardScene) 구현
+
+기존엔 TODO만 있던 스텁을 실제로 구현.
+
+- 스테이지 승리 시 지급된 히든 카드가 있으면, 화면 상단에 "카드를 얻었습니다!" + 카드를 크게(1.8배) 표시 + 설명/효과를 보여주고 일정 시간 후 자동으로 `Map`으로 전환. 지급된 카드가 없으면(보상 없는 적이거나 이미 보유 중) 화면 없이 바로 `Map`으로 이동.
+- **[BattleManager.ts](src/systems/BattleManager.ts)**가 `getLastGrantedCard()`로 이번 전투에서 지급된 카드를 노출하고, **[BattleScene.ts](src/scenes/BattleScene.ts)**가 승리 시 이를 `Reward` 씬에 데이터로 전달.
+
+## 17. 엔딩 스태프롤(VictoryScene) 구현
+
+기존엔 한 줄짜리 스텁이었던 씬을 실제 엔딩으로 구현.
+
+- 배경: `ending_static.png`(정적 베이스) + `ending_layout_1.png`(광원/파티클 8프레임 애니메이션), BGM `ending.mp3` 무한 반복.
+- 화면 정중앙 하단에서 시작해 위로 끝없이 흘러가는 스태프롤(제목 → 스테이지 클리어 기록 → 크레딧 섹션 순). 텍스트가 지나가는 자리엔 반투명 카펫을 깔아 가독성 확보.
+- 크레딧 **내용**은 **[data/credits.ts](src/data/credits.ts)**로 분리(제목/섹션/이름 배열). 스크롤 로직(`VictoryScene`)과 내용(데이터)을 분리해뒀기 때문에 크레딧만 수정하고 싶으면 이 파일만 고치면 됨.
+- 우측 하단 "ESC를 눌러 처음화면으로" 안내 문구(검정색, 알파 1↔0.25 반복 트윈으로 은은하게 반짝임) — 클릭 또는 ESC 키 입력으로 `MainMenu`로 복귀.
+- **스테이지별 클리어 타임 기록**: **[RunManager.ts](src/systems/RunManager.ts)**의 `startStageTimer()`/`recordStageClear()`로 전투 시작~승리까지 걸린 시간을 스테이지별로 측정해 스태프롤 첫머리에 표시(`EnemyDatabase.getName()`으로 적 이름 조회).
+- **버그**: `ending_layout_1.png`가 10240px 폭(1×8 배치)이라 WebGL 최대 텍스처 크기(8192px)를 넘어 로드 시 화면이 통째로 까맣게 나오던 문제 — 타이틀/게임오버 오버레이와 같은 방식으로 4×2 그리드(5120×1440)로 재배치해서 해결.
+
+## 18. 새 카드 효과: cancelDebuff
+
+- **[Card.ts](src/cards/Card.ts)**에 `{ kind: "cancelDebuff" }` 추가 — 카드를 낸 쪽 자신의 상태이상 중 **남은 턴수가 가장 많은 것 1개**를 제거. `cancelNextEnemyAction`/`resetEnemyDivePower`처럼 항상 자기 자신(source)에게만 적용되는 효과라 target 필드가 없음.
+- **[Character.ts](src/entities/Character.ts)**에 `removeStrongestStatusEffect()` 추가.
+- **버그**: 처음 구현할 때 `target: EffectTarget` 필드를 요구하도록 만들었는데 `cards.json`엔 그 필드가 없어서, 대상 판별이 항상 상대편으로 빠져 "자신의 디버프 제거" 카드가 실제로는 적의 상태이상을 검사/제거하던 문제가 있었음. target 필드를 아예 없애고 항상 자기 자신을 대상으로 하도록 단순화해서 해결.
+- **버그**: 디버프가 없어 카드를 못 낼 때 `BattleManager.getBlockReason()`이 "staminaMax 아니면 depthMax" 둘 중 하나로만 추측하던 탓에 항상 "수심 최대치" 메시지가 잘못 뜨던 문제 — `CardBlockReason`에 `noDebuffToCancel`을 추가하고 전용 메시지를 매핑해서 해결.
+
+## 19. 그 밖의 버그 수정
+
+- **상태이상 UI 미표시 버그**: `BattleScene.onEndTurn()`이 카드 효과는 즉시 적용하면서도 화면 갱신(`refreshGauges()`)은 적 턴이 끝난 뒤에야 호출해서, `cancelNextEnemyAction`처럼 지속시간 1턴짜리 상태이상(기절)은 화면에 뜰 기회도 없이 바로 소모되어 사라지던 문제. 카드를 낸 직후에도 `refreshGauges()`를 호출하도록 수정.
+- **수심 0인데 게임오버가 지연되는 버그**: `BattleManager.runEnemyTurn()`이 `checkBattleEnd()`를 플레이어의 turn-start 상태이상(중독 등)이 발동되기 **전**에 호출하고 있어서, 중독이 플레이어 턴 시작 시점에 수심을 0으로 만들어도 그 즉시 게임 오버로 이어지지 않고 다음 카드 사용이나 다음 적 턴까지 미뤄지던 문제. `checkBattleEnd()` 호출 위치를 플레이어의 turn-start 효과 처리 뒤로 이동해서 해결.
+- **네온 안시 처치 시 게임 멈춤 버그**: `NeonAnsi.ts`의 `rewardCardId`가 `cards.json`에 등록된 실제 카드 id와 철자가 달라(`"ansi's curious"` vs `"ansis_curious"`) 보상 지급 시 `Unknown card id` 예외가 승패 판정 도중에 발생, 전투 종료 이벤트 자체가 멈춰버리던 문제.
+- **spray.png 프레임 재수정**: 이펙트 이미지가 교체되면서 프레임 폭이 제각각이고 위아래 여백도 커짐 — kraken/neon_ansi에 쓰던 `defineIrregularFrames()`에 공통 y오프셋 파라미터를 추가해 대응.
+
+## 20. 아직 안 한 것 / TODO
+
+- 카드 강화(레벨업) 등 `RewardScene`의 다른 보상 종류는 미구현(현재는 히든 카드 지급만 있음).
+- `EnemyAI`의 "defense"/"dive"/"special" 결정에 대응하는 실제 행동 로직 없음(현재는 "attack"만 실제로 카드를 사용함) — 이 부분은 이번 세션에서 다시 확인하지 않아 최신 상태 불명.
 - 라이선스 화면에는 짧은 저작권 고지만 있고, SIL OFL 전문은 아직 넣지 않음(사용자 확인 대기 중이었음).
 - poison/attackDown/stunned 외의 새 상태이상은 아직 없음(레지스트리 구조만 마련된 상태).
-- 플레이어는 아직 stunned로 실제 차단되는 카드가 없음(적 전용 카드만 존재, 구조상 대칭 지원은 이미 됨).
+- 엔딩 스태프롤 크레딧 내용(`data/credits.ts`)은 뼈대만 채워둔 상태(제작: jhbaek) — 실제 크레딧 내용은 나중에 채워야 함.

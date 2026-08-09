@@ -47,12 +47,20 @@
     "effects": [{ "kind": "damage", "amount": 300, "target": "opponent" }]
   },
   {
+    "id": "jaw_snap",
+    "name": "아가미 물어뜯기",
+    "type": "attack",
+    "description": "날카로운 이빨로 상대의 아가미를 물어뜯는다.",
+    "enemyId": "fusion_shark",
+    "effects": [{ "kind": "damage", "amount": 150, "target": "opponent" }]
+  },
+  {
     "id": "eat_shrimp",
     "name": "새우 먹기",
     "type": "dive",
     "description": "숨겨뒀던 새우를 먹는다.",
     "enemyId": "fusion_shark",
-    "effects": [{ "kind": "depthChange", "amount": 5, "target": "self" }]
+    "effects": [{ "kind": "depthChange", "amount": 50, "target": "self" }]
   },
   {
     "id": "high_frequency_roar",
@@ -63,14 +71,6 @@
     "effects": [
       { "kind": "statusEffect", "status": "attackDown", "amount": 20, "duration": 2, "target": "opponent" }
     ]
-  },
-  {
-    "id": "jaw_snap",
-    "name": "아가미 물어뜯기",
-    "type": "attack",
-    "description": "날카로운 이빨로 상대의 아가미를 물어뜯는다.",
-    "enemyId": "fusion_shark",
-    "effects": [{ "kind": "damage", "amount": 120, "target": "opponent" }]
   },
   {
     "id": "toxic_current",
@@ -86,25 +86,31 @@
     "id": "drifting_sting",
     "name": "부유 촉수",
     "type": "attack",
-    "description": "흐느적거리는 촉수로 약하게 찌른다.",
+    "description": "흐느적거리는 촉수로 찌른다.",
     "enemyId": "unfathomable_jellyfish",
     "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" }]
   },
   {
-    "id": "sucking",
-    "name": "흡입",
-    "type": "attack",
-    "description": "독이 흐르는 전류로 상대를 서서히 갉아먹는다.",
-    "enemyId": "neon_ansi",
-    "effects": [
-      { "kind": "statusEffect", "status": "poison", "amount": 100, "duration": 3, "target": "opponent" }
-    ]
+    "id": "underwater_jump",
+    "name": "심해 점프",
+    "type": "defense",
+    "description": "순간적인 힘을 모아 공격을 피한다.",
+    "enemyId": "unfathomable_jellyfish",
+    "effects": [{ "kind": "shield", "amount": 10, "target": "self" }]
+  },
+  {
+    "id": "deep_breath",
+    "name": "심호흡",
+    "type": "dive",
+    "description": "숨을 깊게 들이마셔 해저로 내려간다.",
+    "enemyId": "unfathomable_jellyfish",
+    "effects": [{ "kind": "depthChange", "amount": 100, "target": "self" }]
   },
   {
     "id": "sucking",
     "name": "흡입",
     "type": "attack",
-    "description": "주둥이로 상대의 모든 것을 빨아들인다.",
+    "description": "빨판 주둥이로 상대를 빨아들인다.",
     "enemyId": "neon_ansi",
     "effects": [{ "kind": "damage", "amount": 200, "target": "opponent" }]
   },
@@ -112,7 +118,7 @@
     "id": "hiding_sand",
     "name": "모래 숨기",
     "type": "defense",
-    "description": "모래에 숨어 있는다.",
+    "description": "잠시 모래에 숨어 있는다.",
     "enemyId": "neon_ansi",
     "effects": [{ "kind": "shield", "amount": 100, "target": "self" },
     { "kind": "statusEffect", "status": "attackDown", "amount": 20, "duration": 1, "target": "self" }]

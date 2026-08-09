@@ -23,6 +23,8 @@ function formatEffect(effect: CardEffect): string {
       return "스태미너 최대치까지 회복";
     case "resetEnemyDivePower":
       return "상대 잠수력 초기화";
+    case "cancelDebuff":
+      return "자신의 상태이상 중 남은 턴수가 가장 많은 것 1개 제거";
   }
 }
 
