@@ -8,6 +8,7 @@ import { Card, CardType } from "../cards/Card";
 import { EnemyCard } from "../cards/EnemyCard";
 import { CardDatabase } from "../cards/CardDatabase";
 import { HandView } from "../ui/HandView";
+import { Button } from "../ui/Button";
 import { DepthTrack } from "../ui/DepthTrack";
 import { StatPanel } from "../ui/StatPanel";
 import { SurfaceLine } from "../ui/SurfaceLine";
@@ -18,9 +19,8 @@ import { EventBus, GameEvents } from "../utils/EventBus";
 import { Character } from "../entities/Character";
 import {
   HAND_SIZE,
-  FONT_FAMILY,
   ATTACK_ANIMATION_MS,
-  MAX_HAND_REDRAWS_PER_STAGE,
+  MAX_RESHUFFLES_PER_STAGE,
 } from "../config/Constants";
 import { EnemyFactory } from "../entities/EnemyFactory";
 import { EnemyDatabase } from "../entities/EnemyDatabase";
@@ -33,7 +33,7 @@ export interface BattleSceneData {
 const PLAYER_COLOR = 0x4fc3f7;
 const ENEMY_COLOR = 0xff8080;
 const ENEMY_TURN_BANNER_FONT_SIZE = "22px";
-const ENEMY_TURN_DELAY_MS = 1000;
+const ENEMY_TURN_DELAY_MS = 1500;
 
 // 플레이어 수심이 이 값 이하(=해수면에 거의 도달)면 위기감을 주기 위해 전투 BGM을 빠르게 재생한다.
 const LOW_DEPTH_BGM_THRESHOLD = 200;
@@ -53,7 +53,7 @@ const BLOCK_REASON_MESSAGES: Record<CardBlockReason, string> = {
 };
 
 const HAND_FULL_MESSAGE = "손에 들 수 있는 카드가 최대치입니다.";
-const NO_REDRAWS_LEFT_MESSAGE = "이번 스테이지에서 카드 뽑기를 더 사용할 수 없습니다.";
+const NO_RESHUFFLES_LEFT_MESSAGE = "이번 스테이지에서 재셔플을 더 사용할 수 없습니다.";
 
 // 카드 타입별 사용 효과음. 플레이어/적 공용이며(둘 다 GameEvents.CardPlayed로 들어옴),
 // 매핑이 없는 타입(special)은 소리 없이 넘어간다.
@@ -74,7 +74,7 @@ export class BattleScene extends Phaser.Scene {
   private playerPanel!: StatPanel;
   private enemyPanel!: StatPanel;
   private dialogBox!: DialogBox;
-  private drawButton!: Phaser.GameObjects.Text;
+  private reshuffleButton!: Button;
   private selectedCard: Card | null = null;
   private bgm?: Phaser.Sound.BaseSound & { setRate(value: number): unknown };
 
@@ -100,7 +100,11 @@ export class BattleScene extends Phaser.Scene {
     this.player = new Player();
     this.enemy = EnemyFactory.create(data.enemyId, EnemyDatabase.getStats(data.enemyId));
     this.battleManager = new BattleManager(this.player, this.enemy);
-    this.deck = new Deck(CardDatabase.getAll().filter((card) => !card.hidden));
+    // 기본 카드 + 이 런에서 처치한 적에게서 얻은 히든 카드(RunManager.addCard로 지급됨)를 합친다.
+    this.deck = new Deck([
+      ...CardDatabase.getAll().filter((card) => !card.hidden),
+      ...RunManager.getInstance().getOwnedCards(),
+    ]);
 
     if (this.enemy.bgmKey) {
       this.bgm = this.sound.add(this.enemy.bgmKey);
@@ -139,15 +143,11 @@ export class BattleScene extends Phaser.Scene {
       (card) => this.onCardDoubleClicked(card)
     );
 
-    this.add
-      .text(950, 690, "턴 종료", { fontSize: "20px", fontFamily: FONT_FAMILY })
-      .setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => this.onEndTurn());
-
-    this.drawButton = this.add
-      .text(950, 640, this.getDrawButtonLabel(), { fontSize: "20px", fontFamily: FONT_FAMILY })
-      .setInteractive({ useHandCursor: true })
-      .on("pointerdown", () => this.onDrawCard());
+    this.reshuffleButton = new Button(this, 1090, 580, this.getReshuffleButtonLabel(), () =>
+      this.onReshuffle()
+    );
+    new Button(this, 1090, 630, "카드 뽑기", () => this.onDrawCard());
+    new Button(this, 1090, 680, "턴 종료", () => this.onEndTurn());
 
     this.dialogBox = new DialogBox(this, 640, 360);
 
@@ -174,8 +174,10 @@ export class BattleScene extends Phaser.Scene {
     });
   }
 
-  private onCardPlayedShowDialog(card: Pick<Card, "description" | "effects">): void {
-    this.dialogBox.show([card.description, "", formatCardEffects(card.effects)].join("\n"));
+  private onCardPlayedShowDialog(card: Pick<Card, "name" | "description" | "effects">): void {
+    this.dialogBox.show(
+      [card.name, "", card.description, "", formatCardEffects(card.effects)].join("\n")
+    );
   }
 
   private onCardPlayedSound(card: Pick<Card, "type">): void {
@@ -239,29 +241,37 @@ export class BattleScene extends Phaser.Scene {
     this.onEndTurn();
   }
 
-  // "카드 뽑기": 빈 슬롯 수만큼만 채워 뽑는다. 손패가 이미 최대치거나 스테이지당 사용 횟수를
-  // 다 썼으면 뽑지 않고 안내만 띄운다.
+  // "카드 뽑기": 빈 슬롯 수만큼만 채워 뽑는다. 스테이지당 횟수 제한은 없고, 손패가 이미
+  // 최대치일 때만 안내만 띄운다.
   private onDrawCard(): void {
     if (this.deck.getHand().length >= HAND_SIZE) {
       this.dialogBox.show(HAND_FULL_MESSAGE);
       return;
     }
 
+    this.deck.draw(HAND_SIZE - this.deck.getHand().length);
+    this.handView.render(this.deck.getHand());
+  }
+
+  // "재셔플": 아직 사용하지 않은 현재 손패를 전부 되돌리고 그 중에서 무작위로 다시 뽑아
+  // 손패를 재배열한다. 이미 사용(버림더미로 이동)된 카드는 대상에서 제외된다.
+  // 스테이지당 MAX_RESHUFFLES_PER_STAGE번까지만 사용할 수 있다.
+  private onReshuffle(): void {
     const runManager = RunManager.getInstance();
-    if (runManager.getRemainingHandRedraws() <= 0) {
-      this.dialogBox.show(NO_REDRAWS_LEFT_MESSAGE);
+    if (runManager.getRemainingReshuffles() <= 0) {
+      this.dialogBox.show(NO_RESHUFFLES_LEFT_MESSAGE);
       return;
     }
 
-    runManager.useHandRedraw();
-    this.deck.draw(HAND_SIZE - this.deck.getHand().length);
+    runManager.useReshuffle();
+    this.deck.reshuffleHand(HAND_SIZE);
     this.handView.render(this.deck.getHand());
-    this.drawButton.setText(this.getDrawButtonLabel());
+    this.reshuffleButton.setText(this.getReshuffleButtonLabel());
   }
 
-  private getDrawButtonLabel(): string {
-    const remaining = RunManager.getInstance().getRemainingHandRedraws();
-    return `카드 뽑기 (${remaining}/${MAX_HAND_REDRAWS_PER_STAGE})`;
+  private getReshuffleButtonLabel(): string {
+    const remaining = RunManager.getInstance().getRemainingReshuffles();
+    return `재셔플 (${remaining}/${MAX_RESHUFFLES_PER_STAGE})`;
   }
 
   private onEndTurn(): void {

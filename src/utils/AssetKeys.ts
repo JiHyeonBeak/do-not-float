@@ -8,6 +8,8 @@ export const AssetKeys = {
     fusionSharkAttack: "fusion-shark-attack",
     unfathomableJellyfish: "unfathomable-jellyfish",
     unfathomableJellyfishAttack: "unfathomable-jellyfish-attack",
+    neonAnsi: "neon-ansi",
+    neonAnsiAttack: "neon-ansi-attack",
     // 전투 배경은 정적 베이스(1장) + 그 위에 겹치는 애니메이션 fx 오버레이(8프레임)로 2겹 구성이다.
     backgroundBattleStatic: "background-battle-static",
     backgroundBattleFx: "background-battle-fx",
@@ -15,8 +17,23 @@ export const AssetKeys = {
     backgroundTitle: "background-title",
     backgroundTitleOverlay1: "background-title-overlay1",
     backgroundTitleOverlay2: "background-title-overlay2",
+    // 게임 오버 배경도 같은 구성: 정적 베이스(1장) + 그 위에 겹치는 애니메이션 레이어(각 8프레임) 2겹.
+    backgroundGameOver: "background-gameover",
+    backgroundGameOverLayer1: "background-gameover-layer1",
+    backgroundGameOverLayer2: "background-gameover-layer2",
     // 수심 변화(피해/잠수) 때 캐릭터 발밑에 잠깐 띄우는 물보라 이펙트.
     effectSpray: "effect-spray",
+    // 맵(스테이지 선택) 배경: 금속 원형 틀 4개 + 하단 버튼 프레임이 그려진 정적 이미지 1장.
+    backgroundMap: "background-map",
+    // 범용 버튼 프레임(단일 정적 이미지). Button 컴포넌트가 이 위에 라벨 텍스트를 겹쳐 그린다.
+    button: "button",
+    // 손패 카드 프레임. 상단에 이름칸(긴 직사각형)과 코스트칸(팔각형)이 그려져 있다.
+    // 히든 카드는 카드마다 개별 아트가 있는 전용 프레임으로 교체될 수 있다(CardView의
+    // CARD_FRAME_OVERRIDES 참고) — 새 카드를 추가할 땐 여기 키 하나만 늘리면 된다.
+    cardFrame: "card-frame",
+    cardFrameCrazySharkEye: "card-frame-crazy-shark-eye",
+    cardFrameAnsisCurious: "card-frame-ansis-curious",
+    cardFrameJellyfishAirpump: "card-frame-jellyfish-airpump",
   },
   animations: {
     playerIdle: "player-idle",
@@ -27,9 +44,13 @@ export const AssetKeys = {
     krakenAttack: "kraken-attack",
     unfathomableJellyfishIdle: "unfathomable-jellyfish-idle",
     unfathomableJellyfishAttack: "unfathomable-jellyfish-attack",
+    neonAnsiIdle: "neon-ansi-idle",
+    neonAnsiAttack: "neon-ansi-attack",
     backgroundBattleFxAmbient: "background-battle-fx-ambient",
     backgroundTitleOverlay1Ambient: "background-title-overlay1-ambient",
     backgroundTitleOverlay2Ambient: "background-title-overlay2-ambient",
+    backgroundGameOverLayer1Ambient: "background-gameover-layer1-ambient",
+    backgroundGameOverLayer2Ambient: "background-gameover-layer2-ambient",
     effectSpray: "effect-spray-ambient",
   },
   audio: {
@@ -38,6 +59,8 @@ export const AssetKeys = {
     bgmFusionSharkBattle: "bgm-fusion-shark-battle",
     bgmJellyfishBattle: "bgm-jellyfish-battle",
     bgmKrakenBattle: "bgm-kraken-battle",
+    bgmNeonAnsiBattle: "bgm-neon-ansi-battle",
+    bgmMap: "bgm-map",
     sfxCardSelect: "sfx-card-select",
     sfxCardPlay: "sfx-card-play",
     sfxAttack: "sfx-attack",

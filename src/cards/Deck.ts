@@ -34,6 +34,15 @@ export class Deck<T extends { id: string }> {
     return this.hand;
   }
 
+  // 현재 손패(아직 사용하지 않은 카드)를 뽑을 더미로 되돌리고 다시 섞은 뒤 새로 뽑는다.
+  // 이미 사용(버림더미로 이동)된 카드는 대상에서 제외된다.
+  reshuffleHand(count: number): T[] {
+    this.drawPile.push(...this.hand);
+    this.hand = [];
+    this.drawPile = this.shuffle(this.drawPile);
+    return this.draw(count);
+  }
+
   private reshuffleDiscardIntoDraw(): void {
     this.drawPile = this.shuffle(this.discardPile);
     this.discardPile = [];

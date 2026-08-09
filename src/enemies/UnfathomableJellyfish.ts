@@ -8,4 +8,5 @@ export class UnfathomableJellyfish extends Enemy {
   readonly idleAnimKey = AssetKeys.animations.unfathomableJellyfishIdle;
   readonly attackAnimKey = AssetKeys.animations.unfathomableJellyfishAttack;
   readonly bgmKey = AssetKeys.audio.bgmJellyfishBattle;
+  readonly rewardCardId = "jellyfish_airpump"; // 해파리 에어펌프
 }

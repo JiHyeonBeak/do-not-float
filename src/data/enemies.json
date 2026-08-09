@@ -8,13 +8,19 @@
   {
     "id": "fusion_shark",
     "name": "핵융합 상어",
-    "depth": 800,
+    "depth": 10,
     "divePower": 10
   },
   {
     "id": "unfathomable_jellyfish",
     "name": "불가해파리",
-    "depth": 850,
+    "depth": 50,
     "divePower": 20
+  },
+  {
+    "id": "neon_ansi",
+    "name": "네온 안시",
+    "depth": 75,
+    "divePower": 30
   }
 ]

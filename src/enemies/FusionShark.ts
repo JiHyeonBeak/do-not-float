@@ -8,4 +8,5 @@ export class FusionShark extends Enemy {
   readonly idleAnimKey = AssetKeys.animations.fusionSharkIdle;
   readonly attackAnimKey = AssetKeys.animations.fusionSharkAttack;
   readonly bgmKey = AssetKeys.audio.bgmFusionSharkBattle;
+  readonly rewardCardId = "crazy_shark_eye"; // 미친 상어의 눈빛
 }

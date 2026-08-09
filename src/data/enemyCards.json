@@ -89,5 +89,40 @@
     "description": "흐느적거리는 촉수로 약하게 찌른다.",
     "enemyId": "unfathomable_jellyfish",
     "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" }]
+  },
+  {
+    "id": "sucking",
+    "name": "흡입",
+    "type": "attack",
+    "description": "독이 흐르는 전류로 상대를 서서히 갉아먹는다.",
+    "enemyId": "neon_ansi",
+    "effects": [
+      { "kind": "statusEffect", "status": "poison", "amount": 100, "duration": 3, "target": "opponent" }
+    ]
+  },
+  {
+    "id": "sucking",
+    "name": "흡입",
+    "type": "attack",
+    "description": "주둥이로 상대의 모든 것을 빨아들인다.",
+    "enemyId": "neon_ansi",
+    "effects": [{ "kind": "damage", "amount": 200, "target": "opponent" }]
+  },
+  {
+    "id": "hiding_sand",
+    "name": "모래 숨기",
+    "type": "defense",
+    "description": "모래에 숨어 있는다.",
+    "enemyId": "neon_ansi",
+    "effects": [{ "kind": "shield", "amount": 100, "target": "self" },
+    { "kind": "statusEffect", "status": "attackDown", "amount": 20, "duration": 1, "target": "self" }]
+  },
+  {
+    "id": "rock_climbing",
+    "name": "암초 타기",
+    "type": "special",
+    "description": "자신의 수심을 높여 상대의 머리로 돌진한다. ",
+    "enemyId": "neon_ansi",
+    "effects": [{ "kind": "damage", "amount": 100, "target": "self" },{ "kind": "damage", "amount": 300, "target": "opponent" }]
   }
 ]

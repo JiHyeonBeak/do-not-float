@@ -2,18 +2,22 @@ import { Player } from "../entities/Player";
 import { Enemy } from "../entities/Enemy";
 import { Card } from "../cards/Card";
 import { CardEffectResolver } from "../cards/CardEffectResolver";
+import { CardDatabase } from "../cards/CardDatabase";
 import { getCardCost } from "../cards/CardCost";
 import { TurnManager } from "./TurnManager";
 import { EnemyAI } from "./EnemyAI";
 import { RunManager } from "./RunManager";
 import { BattleResult } from "../types/GameTypes";
 import { EventBus, GameEvents } from "../utils/EventBus";
+import { STAMINA_REGEN_INTERVAL_TURNS, STAMINA_REGEN_AMOUNT } from "../config/Constants";
 
 // 카드를 낼 수 없는 이유. 실제 안내 문구는 UI(BattleScene) 쪽에서 매핑한다.
 export type CardBlockReason = "insufficientStamina" | "depthMax" | "staminaMax" | "stunned";
 
 export class BattleManager {
   private turnManager = new TurnManager();
+  // 전투 시작 시점이 플레이어의 1번째 턴이므로 1부터 센다.
+  private playerTurnNumber = 1;
 
   constructor(private player: Player, private enemy: Enemy) {}
 
@@ -77,13 +81,36 @@ export class BattleManager {
 
     // 다시 플레이어 턴이 시작되는 시점이므로 플레이어의 turn-start 효과를 발동시키고 남은 턴을 줄인다.
     this.player.resolveTurnStartStatusEffects();
+
+    // 밸런스 패치: 플레이어 턴이 N번째로 돌아올 때마다 스태미너를 소량 자동 회복한다.
+    this.playerTurnNumber += 1;
+    if (this.playerTurnNumber % STAMINA_REGEN_INTERVAL_TURNS === 0) {
+      RunManager.getInstance().restoreStamina(STAMINA_REGEN_AMOUNT);
+      console.log(`[Battle] 플레이어 턴 ${this.playerTurnNumber}번째: 스태미너 ${STAMINA_REGEN_AMOUNT} 자동 회복`);
+    }
   }
 
   private checkBattleEnd(): void {
     if (this.player.isSurfaced() || this.enemy.isSurfaced()) {
       const result: BattleResult = this.player.isSurfaced() ? "defeat" : "victory";
+      if (result === "victory") {
+        this.grantEnemyRewardCard();
+      }
       this.turnManager.endBattle();
       EventBus.emit(GameEvents.BattleEnded, result);
     }
+  }
+
+  // 적마다 정해진 히든 카드(Enemy.rewardCardId)를 처치 시 1회 지급한다. 이미 갖고 있으면
+  // 아무 일도 하지 않는다(checkBattleEnd가 승리 판정 후 한 번 더 호출될 수 있어 방어적으로 확인).
+  private grantEnemyRewardCard(): void {
+    const rewardCardId = this.enemy.rewardCardId;
+    if (!rewardCardId) return;
+
+    const runManager = RunManager.getInstance();
+    const alreadyOwned = runManager.getOwnedCards().some((card) => card.id === rewardCardId);
+    if (alreadyOwned) return;
+
+    runManager.addCard(CardDatabase.getById(rewardCardId));
   }
 }

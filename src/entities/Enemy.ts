@@ -15,6 +15,9 @@ export abstract class Enemy extends Character {
   readonly idleAnimKey?: string;
   readonly attackAnimKey?: string; // attack/special 카드 사용 시 재생할 애니메이션 키
   readonly bgmKey?: string; // 이 적과의 전투 중 반복 재생할 BGM. 없으면 BattleScene이 BGM을 틀지 않는다.
+  // 이 적을 처치하면 플레이어에게 지급되는 히든 카드 id(cards.json의 hidden:true 카드).
+  // 없으면 아무 카드도 지급하지 않는다.
+  readonly rewardCardId?: string;
 
   private deck?: Deck<EnemyCard>;
 

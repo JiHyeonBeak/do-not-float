@@ -25,12 +25,17 @@ export abstract class Character {
     return this.depth <= 0;
   }
 
+  // 잠수력은 무효화되지 않는 고정 피해 감소량이 아니라, 먼저 깎이는 방어막(실드)처럼 동작한다.
+  // 피해가 잠수력보다 작으면 잠수력만 그만큼 줄고 수심은 그대로다. 잠수력을 넘는 만큼만
+  // 수심에 들어가고, 그만큼 잠수력은 0으로 소진된다.
   applyDamage(amount: number): number {
     const before = this.depth;
-    const mitigated = Math.max(0, amount - this.divePower);
-    this.depth = Math.max(0, this.depth - mitigated);
+    const absorbedByDivePower = Math.min(amount, this.divePower);
+    this.divePower -= absorbedByDivePower;
+    const remainingDamage = amount - absorbedByDivePower;
+    this.depth = Math.max(0, this.depth - remainingDamage);
     this.emitDepthChangedIfDifferent(before);
-    return mitigated;
+    return remainingDamage;
   }
 
   changeDepth(amount: number): void {

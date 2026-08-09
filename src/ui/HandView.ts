@@ -1,6 +1,8 @@
 import Phaser from "phaser";
 import { Card } from "../cards/Card";
-import { CardView } from "./CardView";
+import { CardView, CARD_WIDTH } from "./CardView";
+
+const CARD_SPACING = CARD_WIDTH + 20;
 
 export class HandView extends Phaser.GameObjects.Container {
   private cardViews: CardView[] = [];
@@ -36,7 +38,7 @@ export class HandView extends Phaser.GameObjects.Container {
       (card, index) =>
         new CardView(
           this.scene,
-          index * 130,
+          index * CARD_SPACING,
           0,
           card,
           this.onCardClicked,

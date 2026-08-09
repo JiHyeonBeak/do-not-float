@@ -2,14 +2,52 @@ import Phaser from "phaser";
 import { Card } from "../cards/Card";
 import { getCardCost } from "../cards/CardCost";
 import { FONT_FAMILY } from "../config/Constants";
+import { AssetKeys } from "../utils/AssetKeys";
+
+export const CARD_WIDTH = 170;
+export const CARD_HEIGHT = 220; // card.png 원본(1024x1536)과 같은 2:3 비율
 
 const DEFAULT_STROKE = { width: 2, color: 0xffffff };
 const SELECTED_STROKE = { width: 4, color: 0xffd23f };
 const DOUBLE_CLICK_THRESHOLD_MS = 300;
 
+// card.png 안에 그려진 이름칸(긴 직사각형)/코스트칸(팔각형)의 중심 좌표를, 카드 이미지를
+// CARD_WIDTH x CARD_HEIGHT로 표시했을 때의 로컬 좌표로 환산해둔 값(원본 이미지에서 실측).
+const NAME_SLOT = { x: -11, y: -64, wrapWidth: 79 };
+const COST_SLOT = { x: 51, y: -64 };
+
+interface CardArtOverride {
+  frameKey: string;
+  nameSlot: typeof NAME_SLOT;
+  costSlot: typeof COST_SLOT;
+}
+
+// 히든 카드는 카드마다 개별 원화가 들어간 전용 프레임을 쓰며, 프레임마다 이름칸/코스트칸
+// 위치가 다를 수 있다. 카드 id -> (프레임 이미지 키 + 그 프레임에 맞는 슬롯 좌표).
+// 새 히든 카드를 추가할 땐 AssetKeys/PreloadScene에 이미지를 등록한 뒤 여기 한 항목만
+// 추가하면 된다(슬롯 좌표는 원본 이미지에서 실측 후 NAME_SLOT/COST_SLOT과 같은 방식으로 환산).
+const CARD_ART_OVERRIDES: Partial<Record<string, CardArtOverride>> = {
+  crazy_shark_eye: {
+    frameKey: AssetKeys.images.cardFrameCrazySharkEye,
+    nameSlot: { x: -19, y: -92, wrapWidth: 85 },
+    costSlot: { x: 48, y: -92 },
+  },
+  ansis_curious: {
+    frameKey: AssetKeys.images.cardFrameAnsisCurious,
+    nameSlot: { x: -19, y: -92, wrapWidth: 85 },
+    costSlot: { x: 48, y: -92 },
+  },
+  jellyfish_airpump: {
+    frameKey: AssetKeys.images.cardFrameJellyfishAirpump,
+    nameSlot: { x: -19, y: -92, wrapWidth: 85 },
+    costSlot: { x: 48, y: -92 },
+  }
+};
+
 export class CardView extends Phaser.GameObjects.Container {
   readonly card: Card;
-  private background: Phaser.GameObjects.Rectangle;
+  private frame: Phaser.GameObjects.Image;
+  private selectionBorder: Phaser.GameObjects.Rectangle;
 
   constructor(
     scene: Phaser.Scene,
@@ -22,26 +60,39 @@ export class CardView extends Phaser.GameObjects.Container {
     super(scene, x, y);
     this.card = card;
 
-    this.background = scene.add
-      .rectangle(0, 0, 120, 160, 0x0d3b57)
+    const artOverride = CARD_ART_OVERRIDES[card.id];
+    const frameKey = artOverride?.frameKey ?? AssetKeys.images.cardFrame;
+    const nameSlot = artOverride?.nameSlot ?? NAME_SLOT;
+    const costSlot = artOverride?.costSlot ?? COST_SLOT;
+
+    this.frame = scene.add.image(0, 0, frameKey).setDisplaySize(CARD_WIDTH, CARD_HEIGHT);
+    // 카드 프레임 자체엔 테두리가 없으므로, 선택 상태를 보여줄 얇은 테두리를 그 위에 겹친다.
+    this.selectionBorder = scene.add
+      .rectangle(0, 0, CARD_WIDTH, CARD_HEIGHT)
       .setStrokeStyle(DEFAULT_STROKE.width, DEFAULT_STROKE.color);
-    const nameText = scene.add.text(-50, -70, card.name, {
-      fontSize: "12px",
-      fontFamily: FONT_FAMILY,
-    });
+
+    const nameText = scene.add
+      .text(nameSlot.x, nameSlot.y, card.name, {
+        fontSize: "12px",
+        fontFamily: FONT_FAMILY,
+        color: "#000000",
+        align: "center",
+        wordWrap: { width: nameSlot.wrapWidth },
+      })
+      .setOrigin(0.5);
     const costText = scene.add
-      .text(50, -70, `${getCardCost(card.effects)}`, {
-        fontSize: "14px",
+      .text(costSlot.x, costSlot.y, `${getCardCost(card.effects)}`, {
+        fontSize: "13px",
         fontFamily: FONT_FAMILY,
         color: "#ffd23f",
       })
-      .setOrigin(1, 0);
+      .setOrigin(0.5);
 
-    this.background.setInteractive({ useHandCursor: true });
+    this.frame.setInteractive({ useHandCursor: true });
 
     // 짧은 시간 안에 두 번 클릭되면 더블클릭으로 취급한다 (선택 + 즉시 사용).
     let lastClickTime = 0;
-    this.background.on("pointerdown", () => {
+    this.frame.on("pointerdown", () => {
       const now = scene.time.now;
       if (onDoubleClick && now - lastClickTime < DOUBLE_CLICK_THRESHOLD_MS) {
         lastClickTime = 0;
@@ -52,13 +103,13 @@ export class CardView extends Phaser.GameObjects.Container {
       }
     });
 
-    this.add([this.background, nameText, costText]);
+    this.add([this.frame, this.selectionBorder, nameText, costText]);
     scene.add.existing(this);
   }
 
   setSelected(selected: boolean): void {
     const stroke = selected ? SELECTED_STROKE : DEFAULT_STROKE;
-    this.background.setStrokeStyle(stroke.width, stroke.color);
+    this.selectionBorder.setStrokeStyle(stroke.width, stroke.color);
   }
 
   shake(): void {

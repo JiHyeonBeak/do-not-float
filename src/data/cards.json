@@ -9,15 +9,6 @@
     "effects": [{ "kind": "stamina", "amount": 3, "target": "self" }]
   },
   {
-    "id": "microalgae_absorption",
-    "name": "미세조류 흡수",
-    "type": "stamina",
-    "hidden": false,
-    "cost": 1,
-    "description": "수중의 미세조류를 흡수하여 스태미너를 회복한다.",
-    "effects": [{ "kind": "stamina", "amount": 3, "target": "self" }]
-  },
-  {
     "id": "coral_song",
     "name": "산호의 노래",
     "type": "stamina",
@@ -25,26 +16,6 @@
     "cost": 2,
     "description": "산호의 응원에 힘입어 스태미너를 회복한다.",
     "effects": [{ "kind": "stamina", "amount": 5, "target": "self" }]
-  },
-  {
-    "id": "whale_nap",
-    "name": "고래 낮잠",
-    "type": "stamina",
-    "hidden": false,
-    "cost": 0,
-    "description": "고래의 등에 기대어 휴식을 취한다.",
-    "effects": [{ "kind": "stamina", "amount": 3, "target": "self" },
-    { "kind": "depthChange", "amount": 20, "target": "self" }]
-  },
-  {
-    "id": "whale_nap",
-    "name": "고래 낮잠",
-    "type": "stamina",
-    "hidden": false,
-    "cost": 0,
-    "description": "고래의 등에 기대어 휴식을 취한다.",
-    "effects": [{ "kind": "stamina", "amount": 3, "target": "self" }, 
-    { "kind": "depthChange", "amount": 20, "target": "self" }]
   },
   {
     "id": "whale_nap",
@@ -76,31 +47,31 @@
     "effects": [{ "kind": "cancelNextEnemyAction" }]
   },
   {
-    "id": "ansi's curious",
+    "id": "ansis_curious",
     "name": "안시의 호기심",
     "type": "special",
     "hidden": true,
     "cost": 1,
-    "description": "네온 안시를 이기면 얻을 수 있는 카드. 적의 전의를 상실시켜 다음 턴 행동을 1회 취소하고 수심을 일정량 회복한다.",
+    "description": "네온 안시를 이기면 얻을 수 있는 카드.\n적의 전의를 상실시켜 다음 턴 행동을 1회 취소하고 수심을 일정량 회복한다.",
     "effects": [{ "kind": "cancelNextEnemyAction" }, 
     { "kind": "depthChange", "amount": 50, "target": "self" }]
   },
   {
-    "id": "jellyfish_air_pump",
-    "name": "해파리 에어펌프",
+    "id": "jellyfish_airpump",
+    "name": "해파리 펌프",
     "type": "special",
     "hidden": true,
     "cost": 1,
-    "description": "불가해파리를 이기면 얻을 수 있는 카드. 스태미너를 최대치까지 회복한다.",
+    "description": "불가해파리를 이기면 얻을 수 있는 카드.\n스태미너를 최대치까지 회복한다.",
     "effects": [{ "kind": "healStaminaMaximum" }]
   },
   {
     "id": "crazy_shark_eye",
-    "name": "미친 상어의 눈빛",
+    "name": "상어의 눈빛",
     "type": "special",
     "hidden": true,
     "cost": 4,
-    "description": "핵융합 상어를 이기면 얻을 수 있는 카드. 적의 잠수력을 초기화 시킨다.",
+    "description": "핵융합 상어를 이기면 얻을 수 있는 카드.\n적의 잠수력을 초기화 시킨다.",
     "effects": [{ "kind": "resetEnemyDivePower" }]
   },
   {
@@ -118,26 +89,36 @@
     "type": "attack",
     "hidden": false,
     "cost": 2,
-    "description": "흡혈징어를 적에게 던져 피해를 주고, 일정량의 스태미너를 회복한다.",
+    "description": "흡혈징어를 적에게 던져 피해를 주고,\n일정량의 스태미너를 회복한다.",
     "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" },
     { "kind": "stamina", "amount": 5, "target": "self" }]
   },
   {
-    "id": "electric_ray_shock",
-    "name": "전기가오리 호출",
+    "id": "succion_seastar",
+    "name": "흡혈징어 투척",
+    "type": "attack",
+    "hidden": false,
+    "cost": 2,
+    "description": "흡혈징어를 적에게 던져 피해를 주고,\n일정량의 스태미너를 회복한다.",
+    "effects": [{ "kind": "damage", "amount": 100, "target": "opponent" },
+    { "kind": "stamina", "amount": 5, "target": "self" }]
+  },
+  {
+    "id": "electric_eel_shock",
+    "name": "전기장어 호출",
     "type": "attack",
     "hidden": false,
     "cost": 4,
-    "description": "호출된 전기가오리가 적에게 강력한 전류를 흘려보낸다.",
+    "description": "호출된 전기장어가 적에게 강력한 전류를 흘려보낸다.",
     "effects": [{ "kind": "damage", "amount": 400, "target": "opponent" }]
   },
   {
-    "id": "electric_ray_shock",
-    "name": "전기가오리 호출",
+    "id": "electric_eel_shock",
+    "name": "전기장어 호출",
     "type": "attack",
     "hidden": false,
     "cost": 4,
-    "description": "호출된 전기가오리가 적에게 강력한 전류를 흘려보낸다.",
+    "description": "호출된 전기장어가 적에게 강력한 전류를 흘려보낸다.",
     "effects": [{ "kind": "damage", "amount": 400, "target": "opponent" }]
   },
   {
@@ -146,7 +127,7 @@
     "type": "attack",
     "hidden": false,
     "cost": 2,
-    "description": "짙은 먹물을 터뜨려 시야를 가리며 공격한다. 적의 다음 턴 행동을 1회 취소한다.",
+    "description": "짙은 먹물을 터뜨려 시야를 가리며 공격한다.\n적의 다음 턴 행동을 1회 취소한다.",
     "effects": [{ "kind": "cancelNextEnemyAction" }]
   },
   {
@@ -223,7 +204,7 @@
   },
   {
     "id": "oxygen_bubble",
-    "name": "산소 방울 흡수",
+    "name": "산소 흡수",
     "type": "dive",
     "hidden": false,
     "cost": 1,

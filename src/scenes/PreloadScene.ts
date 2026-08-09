@@ -64,6 +64,29 @@ export class PreloadScene extends Phaser.Scene {
       "assets/images/backgrounds/title_overlay_2.png",
       { frameWidth: 1280, frameHeight: 720 }
     );
+    // 게임 오버 배경도 동일 구성: 노을진 해수면이 그려진 정적 베이스 1장 위에
+    // 애니메이션 레이어 2겹(수면 물결/반짝임)을 겹쳐 재생한다.
+    this.load.image(AssetKeys.images.backgroundGameOver, "assets/images/backgrounds/gameover_static.png");
+    this.load.spritesheet(
+      AssetKeys.images.backgroundGameOverLayer1,
+      "assets/images/backgrounds/gameover_layer_1.png",
+      { frameWidth: 1280, frameHeight: 720 }
+    );
+    this.load.spritesheet(
+      AssetKeys.images.backgroundGameOverLayer2,
+      "assets/images/backgrounds/gameover_layer_2.png",
+      { frameWidth: 1280, frameHeight: 720 }
+    );
+    // 맵 배경: 금속 원형 틀 4개 + 하단 버튼 프레임이 그려진 단일 정적 이미지.
+    this.load.image(AssetKeys.images.backgroundMap, "assets/images/ui/roardmap.png");
+    // 범용 버튼 프레임(단일 정적 이미지). 전투 화면의 재셔플/카드 뽑기/턴 종료 버튼 등에 공용으로 쓴다.
+    this.load.image(AssetKeys.images.button, "assets/images/ui/button.png");
+    // 손패 카드 프레임(단일 정적 이미지). 이름/코스트 텍스트는 CardView가 그 위에 겹쳐 그린다.
+    this.load.image(AssetKeys.images.cardFrame, "assets/images/cards/card.png");
+    // 히든 카드 전용 프레임(카드마다 고유 아트). 새 히든 카드 추가 시 이 옆에 한 줄만 추가하면 된다.
+    this.load.image(AssetKeys.images.cardFrameCrazySharkEye, "assets/images/cards/card_crazy_shark_eye.png");
+    this.load.image(AssetKeys.images.cardFrameAnsisCurious, "assets/images/cards/card_ansis_curios.png");
+    this.load.image(AssetKeys.images.cardFrameJellyfishAirpump, "assets/images/cards/card_jellyfish_airpump.png");
     // kraken.png / kraken_attack.png는 프레임 4장이 가로로 나열돼 있지만, 프레임마다 폭과
     // 프레임 사이 간격이 제각각이라(그림마다 개별적으로 트리밍됨) frameWidth/spacing을 쓰는
     // 균일 그리드 스프라이트시트로는 자를 수 없다. 그냥 이미지로 로드하고 create()에서
@@ -91,10 +114,15 @@ export class PreloadScene extends Phaser.Scene {
     );
     // 수심 변화 이펙트: 384x274 프레임 4장, 프레임 사이 8px 간격(kraken과 동일한 이유로 추가).
     this.load.spritesheet(AssetKeys.images.effectSpray, "assets/images/effects/spray.png", {
-      frameWidth: 384,
+      frameWidth: 360,
       frameHeight: 274,
       spacing: 8,
     });
+    // 네온 안시: idle/attack 둘 다 물고기마다 폭이 균일하지 않아(그림마다 개별 트리밍됨)
+    // frameWidth 기반 균일 그리드로는 자를 수 없다. kraken과 동일하게 이미지로 로드하고
+    // create()에서 defineIrregularFrames()로 실측한 좌표를 직접 등록한다.
+    this.load.image(AssetKeys.images.neonAnsi, "assets/images/enemies/ansi.png");
+    this.load.image(AssetKeys.images.neonAnsiAttack, "assets/images/enemies/ansi_attack.png");
 
     // 카드 사용 효과음(attack/dive/defense 타입 공용, 플레이어/적 공용)과 사망 효과음.
     this.load.audio(AssetKeys.audio.sfxAttack, "assets/audio/sfx/attack.mp3");
@@ -105,7 +133,9 @@ export class PreloadScene extends Phaser.Scene {
     this.load.audio(AssetKeys.audio.bgmFusionSharkBattle, "assets/audio/bgm/shark_battle.mp3");
     this.load.audio(AssetKeys.audio.bgmJellyfishBattle, "assets/audio/bgm/jellyfish_battle.mp3");
     this.load.audio(AssetKeys.audio.bgmKrakenBattle, "assets/audio/bgm/kraken_battle.mp3");
+    this.load.audio(AssetKeys.audio.bgmNeonAnsiBattle, "assets/audio/bgm/ansi_battle.mp3");
     this.load.audio(AssetKeys.audio.bgmTitle, "assets/audio/bgm/title.mp3");
+    this.load.audio(AssetKeys.audio.bgmMap, "assets/audio/bgm/roadmap.mp3");
   }
 
   create(): void {
@@ -130,6 +160,26 @@ export class PreloadScene extends Phaser.Scene {
         { x: 1124, width: 268 },
       ],
       351
+    );
+    this.defineIrregularFrames(
+      AssetKeys.images.neonAnsi,
+      [
+        { x: 0, width: 355 },
+        { x: 355, width: 420 },
+        { x: 775, width: 445 },
+        { x: 1220, width: 324 },
+      ],
+      398
+    );
+    this.defineIrregularFrames(
+      AssetKeys.images.neonAnsiAttack,
+      [
+        { x: 0, width: 397 },
+        { x: 397, width: 382 },
+        { x: 779, width: 437 },
+        { x: 1216, width: 344 },
+      ],
+      410
     );
 
     this.anims.create({
@@ -191,6 +241,26 @@ export class PreloadScene extends Phaser.Scene {
     });
 
     this.anims.create({
+      key: AssetKeys.animations.backgroundGameOverLayer1Ambient,
+      frames: this.anims.generateFrameNumbers(AssetKeys.images.backgroundGameOverLayer1, {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: AssetKeys.animations.backgroundGameOverLayer2Ambient,
+      frames: this.anims.generateFrameNumbers(AssetKeys.images.backgroundGameOverLayer2, {
+        start: 0,
+        end: 7,
+      }),
+      frameRate: 4,
+      repeat: -1,
+    });
+
+    this.anims.create({
       key: AssetKeys.animations.krakenIdle,
       frames: this.anims.generateFrameNumbers(AssetKeys.images.kraken, { start: 0, end: 3 }),
       frameRate: 6,
@@ -228,6 +298,20 @@ export class PreloadScene extends Phaser.Scene {
       key: AssetKeys.animations.effectSpray,
       frames: this.anims.generateFrameNumbers(AssetKeys.images.effectSpray, { start: 0, end: 3 }),
       frameRate: 10,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: AssetKeys.animations.neonAnsiIdle,
+      frames: this.anims.generateFrameNumbers(AssetKeys.images.neonAnsi, { start: 0, end: 3 }),
+      frameRate: 6,
+      repeat: -1,
+    });
+
+    this.anims.create({
+      key: AssetKeys.animations.neonAnsiAttack,
+      frames: this.anims.generateFrameNumbers(AssetKeys.images.neonAnsiAttack, { start: 0, end: 3 }),
+      frameRate: 8,
       repeat: -1,
     });
 
