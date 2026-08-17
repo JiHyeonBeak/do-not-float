@@ -1,3 +1,4 @@
+[![Deploy to GitHub Pages](https://github.com/JiHyeonBeak/do-not-float/actions/workflows/deploy.yml/badge.svg?branch=main)](https://github.com/JiHyeonBeak/do-not-float/actions/workflows/deploy.yml)
 ## 게임 개요
 
 **“먼저 떠오르지 마라! 적을 먼저 바다 위로 띄워라.”**
