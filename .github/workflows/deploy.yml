@@ -1,0 +1,51 @@
+name: Deploy to GitHub Pages
+
+on:
+  push:
+    branches: [main]
+  workflow_dispatch:
+
+# 가장 최근의 push 이벤트에 대한 배포 작업만 실행되도록 설정
+concurrency:
+  group: deploy
+  cancel-in-progress: true
+
+jobs:
+  deploy:
+    runs-on: ubuntu-latest
+    # 최소 권한 원칙으로 읽기 권한만 부여
+    permissions:
+      contents: read
+    steps:
+      - name: Deploy job start
+        run: echo "The job was automatically triggered by a ${{ github.event_name }} event."
+
+      - name: Check out repository code
+        uses: actions/checkout@v6
+
+      - name: Set up Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: npm
+
+      - name: Install dependencies
+        run: |
+          npm ci
+          echo "Dependencies installed successfully."
+
+      - name: Build
+        run: |
+          npm run build
+          echo "Build completed successfully."
+
+      - name: Deploy to JiHyeonBeak.github.io
+        uses: peaceiris/actions-gh-pages@v4
+        with:
+          personal_token: ${{ secrets.DEPLOY_TOKEN }}
+          external_repository: JiHyeonBeak/JiHyeonBeak.github.io
+          publish_branch: master
+          publish_dir: ./dist
+
+      - name: Deployment Confirmation
+        run: echo "Deployed to https://jihyeonbeak.github.io successfully."
